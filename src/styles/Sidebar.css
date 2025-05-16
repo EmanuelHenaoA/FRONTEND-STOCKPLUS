@@ -1,0 +1,486 @@
+@import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Antic+Slab&family=Bebas+Neue&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Rakkas&family=Rowdies:wght@300;400;700&family=Rubik+Scribble&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+/* 
+background-color: #181a1e;
+background: #110f0f; */
+
+
+* {
+    font-family: 'Montserrat';
+}
+
+.sidebar {
+    background: #110f0f !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
+    transition: all 0.3s;
+    overflow: hidden;
+} 
+
+
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:  #d32929;
+    padding: 9px;
+    font-size: 1.7rem;
+    margin-top: 15px;
+}
+
+
+.logo-icon {
+    margin-left: 5px;
+    background: linear-gradient(95deg, #da1a0c 3.2%, #ffffff 99.5%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    font-size: 24px;
+    cursor: default;
+}
+
+.logout-icon {
+    color:  #d32929 !important; /* Forzar el color */
+}
+
+.header {
+    background-color: #110f0f;
+    position: sticky;
+    left: 16px;
+    top: 4px;
+    transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
+    padding: 33px;
+    display: flex;
+    width: 100%;
+    border-radius: 40px;
+    justify-content: space-between;
+}
+
+
+.header-icon {
+    color: #fff;
+    background:   #d32929;
+    font-size: 15px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.header-title {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: default;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.profile-icon {
+    cursor: pointer;
+    background: #2a2c30;
+    margin: 8px;
+    color: #ffffff;
+}
+  
+
+.menu-bar {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.95rem;
+    background: #110f0f;
+    font-weight: 500;
+    width: 36vh;
+    height: calc(100vh - 64px); /* 64px si tienes un logo arriba, ajústalo si tu logo tiene otra altura */
+}
+
+.ant-layout {
+  background: #110f0f;
+}
+
+
+.ant-menu-item-icon {
+    font-size: 17px !important;
+}
+
+/* Asegurar que el color se aplique correctamente */
+.ant-menu-sub{
+    background-color: #110f0f !important;
+}
+
+.menu-bar .ant-menu-item-selected {
+    background-color: #d32929; /* Color cuando se selecciona */
+}
+
+
+.main-content {
+    min-height: 100vh;
+    background: #110f0f;    
+    margin-left: 34vh; /* mismo ancho que el Sider cuando está expandido */
+    transition: margin-left 0.1s;
+}
+
+.main-content.collapsed {
+  margin-left: 70px; /* mismo que collapsedWidth */
+}
+
+
+
+:where(.ant-layout) {
+    overflow-x: hidden;
+}
+
+
+
+input, button {
+    outline: none;
+}
+
+
+.white {
+    color: #fff;
+}
+
+.brand {
+    padding: .5rem .7rem;
+    display: flex;
+    color: var(--main);
+    align-items: center;
+    height: 70px;
+}
+
+
+.brand span {
+    font-size: 2.3rem;
+    margin-right: .3rem;
+    color: var(--main);
+}
+
+.sidemenu {
+    padding: .7rem;
+}
+
+.sidemenu li {
+    margin-bottom: 1.5rem;
+}
+
+.sidemenu a {
+    color: #fff;
+    font-size: 1.09rem;
+    display: flex;
+    align-items: center;
+}
+
+.sidemenu a span:first-child {
+    font-size: 1.5rem;
+    padding: 0rem .6rem;
+}
+
+
+.searchbar span {
+    font-size: 1.3rem;
+    color: #fff;
+    padding-left: 1.2rem;
+}
+
+
+.searchbar {
+    display: flex;
+    width: 450px;
+    border-radius: 40px;
+    overflow-x: hidden;
+    border: 2px solid #969797;
+    align-items: center;
+    background: transparent;
+}
+
+
+.searchbar input {
+    background: transparent;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 0.8rem;
+    color: white;
+    width: 30rem;
+}
+
+.head-icons span {
+    font-size: 1.3rem;
+    margin-left: 1rem;
+    color: #fff;
+}
+
+
+main {
+    margin-top: calc(5px + .5rem);
+    padding: 1rem 0rem;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 3rem;
+}
+
+.card {
+    background: var(--bg);
+    padding: 2rem 1rem;
+    border-radius: 3px;
+}
+
+.card-icon {
+    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+.card-icon span {
+    height: 55px;
+    width: 55px;
+    color: #fff;
+    font-size: 2rem;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: 64% auto;
+    margin-top: 3rem;
+    grid-gap: 2.5rem;
+}
+
+.chart-follow, .chart-sales {
+    background: var(--bg);
+    padding: 1rem;
+    border-radius: 3px;
+}
+
+.chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #efefef;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #222;
+    margin-bottom: 1rem;
+}
+
+.close-mobile-menu {
+    position: fixed;
+    right: -100%;
+    top: 0;
+    bottom: 0;
+    display: block;
+    height: 100%;
+    width: calc(100% - 280px);
+    background: transparent;
+    z-index: 100;
+    transition: right 300ms;
+}
+
+
+
+@media only screen and (max-width: 845px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-grid {
+        grid-template-columns: 100%;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .search {
+            display: none;
+        }
+        main .recent-orders table th:nth-child(n+3),
+        main .recent-orders table td:nth-child(n+3) {
+        display: none;
+        }
+    }
+
+    @media only screen and (max-width: 630px) {
+        .cards {
+            grid-template-columns: 100%;
+        }
+    }
+}
+
+main .buscarC{
+    background-color: var(--bg);
+    color: var(--color-white);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 1rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    /* cursor: pointer; */
+    transition: all 0.3s ease;
+    margin-bottom: 1.3rem;
+}
+
+.crearc {
+    display: flex;
+    width: 170px;
+    border-radius: 20px; 
+    overflow-x: hidden;
+    border: 1px solid;
+    align-items: center;
+    
+}
+
+.crearc a{
+    /* font-size: 1.3rem; */
+    color: #fff;
+    padding: .4rem;
+}
+
+.crearc span {
+    font-size: 25px;
+}
+
+
+.crearc:hover {
+    background: var(--main);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+
+#opciones-secundarias label {
+    display: flex;
+    font-size: 0.9em;
+}
+#opciones-secundarias input[type="checkbox"] {
+    transform: scale(1);
+    justify-content: space-between;
+} 
+
+/* Estilos para el botón Crear */
+.btn {
+    width: 150px;
+    background-color: #3749eb;
+    border: none;
+    outline: none;
+    height: 49px;
+    border-radius: 49px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 20px ;
+    cursor: pointer;
+    transition: 0.5s;
+  }
+  
+.btn:hover {
+    background-color: #4d84e2;
+}
+
+#opciones-secundarias {
+    display: none;
+    margin-left: 20px;
+    justify-content: left;
+}
+
+
+
+
+
+
+main .new-users{
+    margin-top: 1.8rem;
+}
+
+main .new-users h2{
+    text-align: center; 
+    color: var(--color-white);
+    font-weight: 600;
+    margin-top: 1.3rem;
+
+}
+
+main .new-users .user-list{
+    background-color: var(--bg);
+    color: var(--color-white);
+    padding: var(--card-padding);
+    border-radius: var(--card-border-radius);
+    margin-top: 1rem;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+main .new-users .user-list:hover{
+    box-shadow: none;
+}
+
+main .new-users .user-list .user{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main .new-users .user-list .user img{
+    width: 5rem;
+    height: 5rem;
+    margin-bottom: 0.4rem;
+    border-radius: 15%;
+}
+
+main .recent-orders{
+    margin-top: 0rem;
+}
+
+main h1{
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 800;
+    color: var(--color-white);
+}
+
+main .recent-orders table{
+    background-color: var(--bg);
+    width: 100%;
+    padding: var(--card-padding);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--card-border-radius);
+    transition: all 0.3s ease;
+    color: var(--color-white);
+}
+
+main .recent-orders table:hover{
+    box-shadow: none;
+}
+
+main table tbody td{
+    height: 2.8rem;
+    border-bottom: 1px solid var(--color-light);
+    color: var(--color-white);
+}
+
+main table tbody tr:last-child td{
+    border: none;
+}
+
+
+.actions span {
+    font-size: 1.3rem;
+    margin-right: .4rem;
+    cursor: pointer;
+}

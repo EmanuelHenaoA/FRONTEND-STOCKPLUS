@@ -1,0 +1,155 @@
+/* DataTable.css */
+.data-table-container {
+    margin: 28px;
+    padding: 20px;
+    background: transparent;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .table-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .refresh-button {
+    background-color: #d32929;
+    border-color: #d32929;
+  }
+  
+  .refresh-button:hover {
+    background-color: #b52323;
+    border-color: #b52323;
+  }
+  
+  /* Custom Table Styling */
+  .custom-table {
+    color: #ffffff;
+  }
+  
+  .custom-table .ant-table {
+    background: #ffffff;
+    border-radius: 11px;
+  }
+  
+  .custom-table .ant-table-thead > tr > th {
+    background-color: #110f0f;
+    color: #ffffff;
+    font-weight: 600;
+    border-bottom: 1px solid #d8dfe6; 
+    border-bottom: 1px solid ;
+    padding: 12px 16px;
+  }
+  
+  .custom-table .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #d8dfe6; 
+    padding: 12px 16px;
+    color: #ffffff;
+    background: #110f0f;;
+  }
+  
+  .custom-table .ant-table-tbody > tr:hover > td {
+    background-color: #232529 !important;
+  }
+  
+  .custom-table .ant-table-pagination {
+    margin: 16px 0;
+    color: antiquewhite;
+  }
+  
+  .custom-table .ant-pagination-item-active {
+    background-color: #d32929;
+    border-color: #d32929;
+  }
+  
+  .custom-table .ant-pagination-item-active a {
+    color: #ffffff;
+  }
+  
+  .custom-table .ant-pagination-item:hover {
+    border-color: #fff;
+  }
+  
+  .custom-table .ant-pagination-item:hover a {
+    color: #ffffff;
+  }
+  
+  /* Action Buttons */
+  .action-button {
+    font-size: 16px;
+  }
+  
+  .view-button {
+    color: #fff;
+    background-color: #232529;
+    border-radius: 40px;
+  }
+  
+  .edit-button {
+    color: #6C9BCF;
+    background-color: #232529;
+    border-radius: 40px;
+  }
+  
+  .delete-button {
+    color: #a52019;
+    background-color: #232529;
+    border-radius: 40px;
+  }
+  
+  /* Search Input Styling */
+  .search-input {
+    background: #232529;
+    color: #000000;
+    border-color: #313539;
+  }
+  
+  .search-input::placeholder {
+    color: #676b73;
+  }
+  
+  .search-input:focus,
+  .search-input:hover {
+    border-color: #d32929;
+  }
+  
+  /* Empty Table Message */
+  .custom-table .ant-empty-description {
+    color: #ffffff;
+  }
+  
+  /* Loading Spinner */
+  .custom-table .ant-spin-dot-item {
+    background-color: #d32929;
+  }
+
+  /* Agregar en tu archivo DataTable.css */
+
+.status-active-button {
+  color: #ff4d4f;
+  background-color: #232529;
+  border-radius: 40px;
+}
+
+.status-active-button:hover {
+  color: #ff4d4f;
+}
+
+.status-inactive-button {
+  color: #52c41a;
+  background-color: #232529;
+  border-radius: 40px;
+}
+
+.status-inactive-button:hover {
+  color: #52c41a;
+}

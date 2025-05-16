@@ -1,0 +1,77 @@
+.footer {
+    margin: 50px 0;
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para apilar elementos */
+    width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px; /* Espacio entre el contenido principal y el copyright */
+}
+
+.copyright {
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 25px;
+    border-top: 1px solid #ccc;
+    text-align: center; /* Centrar el texto de copyright */
+}
+
+.footer .footer-header {
+    max-width: 50%;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 40px;
+    color: #fff;
+}
+
+.footer .footer-links {
+    display: flex;
+}
+
+.footer .footer-links .link {
+    margin-left: 70px;
+}
+
+.footer .footer-links .link h5 {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 40px;
+    color: #fff;
+}
+
+.footer .footer-links .link p {
+    font-size: 12px;
+    line-height: 18px;
+    letter-spacing: 0.05em;
+    color: #ccc;
+}
+
+.copyright p {
+    font-size: 12px;
+    line-height: 36px;
+    color: #afafaf;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+    }
+    
+    .footer .footer-header {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .footer .footer-links {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .footer .footer-links .link {
+        margin-left: 0;
+    }
+}
