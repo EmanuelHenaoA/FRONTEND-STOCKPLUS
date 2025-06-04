@@ -19,6 +19,8 @@ export const RepuestosPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [repuestos, setRepuestos] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredRepuestos, setFilteredRepuestos] = useState([]);
     const navigate = useNavigate();
     
     // Estados para los modales
@@ -37,26 +39,30 @@ export const RepuestosPage = () => {
         {
             title: 'Código',
             dataIndex: 'idRepuesto',
-            searchable: true,
+             render: (estado) => (
+                <span style={{ 
+                    fontWeight: estado === 'Activo' ?  'bold' : 'bold' ,
+                    }}>
+                    {estado}
+                </span>
+            ) 
         },
         {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            searchable: true,
         },
         {
             title: 'Existencias',
             dataIndex: 'existencias',
             key: 'existencias',
-            searchable: true,
         },
-        {
-            title: 'Precio Compra',
-            dataIndex: 'precio',
-            key: 'precio',
-            render: (precio) => `$${precio.toLocaleString('es-ES')}`
-        },
+        // {
+        //     title: 'Precio Compra',
+        //     dataIndex: 'precio',
+        //     key: 'precio',
+        //     render: (precio) => `$${precio.toLocaleString('es-ES')}`
+        // },
         {
             title: 'Precio Venta',
             dataIndex: 'precioVenta',
@@ -79,20 +85,23 @@ export const RepuestosPage = () => {
                 return marca && marca.nombre ? marca.nombre : "Sin marca";
             }
         },
-        {
-            title: "Estado",
-            dataIndex: "estado",
-            key: "estado",
+         {
+            title: 'Estado',
+            dataIndex: 'estado',
+            key: 'estado',
             render: (estado) => (
                 <span style={{ 
-                    background: estado === 'Activo' ? 'green' : 'red',
+                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
                     padding: '8px',
-                    borderRadius: '10px',
-                }}>
+                    borderRadius: '0.25rem',
+                    border: '1px solid'
+                    
+                    }}>
                     {estado}
                 </span>
-            )
-        }
+            ) 
+        },
     ];
 
     // Función para cargar los datos de repuestos
@@ -161,27 +170,64 @@ export const RepuestosPage = () => {
         };
 
     // Función para cargar marcas
-    const fetchMarcas = async () => {
-        try {
-            const response = await api.get('/marcas');
-            if (Array.isArray(response.data)) {
-                setMarcas(response.data);
-            } else if (response.data && typeof response.data === 'object') {
-                const arrayData = Object.values(response.data).find(item => Array.isArray(item));
-                if (arrayData) {
-                    setMarcas(arrayData);
-                }
+   // Función para cargar marcas
+const fetchMarcas = async () => {
+    try {
+        const response = await api.get('/marcas');
+        if (response.data && response.data.marcas) {
+            // Filtrar solo marcas activas
+            const marcasActivas = response.data.marcas.filter(
+                marca => marca.estado === "Activo"
+            );
+            setMarcas(marcasActivas);
+        } else if (Array.isArray(response.data)) {
+            // Filtrar solo marcas activas
+            const marcasActivas = response.data.filter(
+                marca => marca.estado === "Activo"
+            );
+            setMarcas(marcasActivas);
+        } else if (response.data && typeof response.data === 'object') {
+            const arrayData = Object.values(response.data).find(item => Array.isArray(item));
+            if (arrayData) {
+                // Filtrar solo marcas activas
+                const marcasActivas = arrayData.filter(
+                    marca => marca.estado === "Activo"
+                );
+                setMarcas(marcasActivas);
             }
-        } catch (error) {
-            console.error('Error al cargar marcas:', error);
         }
-    };
+    } catch (error) {
+        console.error('Error al cargar marcas:', error);
+    }
+};  
 
     // Cargar categorías y marcas al montar el componente
     useEffect(() => {
         fetchCategorias();
         fetchMarcas();
     }, []);
+
+     useEffect(() => {
+            if (!searchTerm) {
+              setFilteredRepuestos(repuestos);
+              return;
+            }
+            
+            const filtered = repuestos.filter(repuesto => {
+              const searchTermLower = searchTerm.toLowerCase();
+              return (
+                (repuesto.nombre && repuesto.nombre.toLowerCase().includes(searchTermLower)) ||
+                (repuesto.precioVenta && String(repuesto.precioVenta).toLowerCase().includes(searchTermLower)) ||
+                (repuesto.idRepuesto && String(repuesto.idRepuesto).toLowerCase().includes(searchTermLower)) ||
+                (repuesto.existencias && String(repuesto.existencias).toLowerCase().includes(searchTermLower)) ||
+                (repuesto.precio && String(repuesto.precio).toLowerCase().includes(searchTermLower)) ||
+                (repuesto.estado && repuesto.estado.toLowerCase().includes(searchTermLower))
+              );
+            });
+            
+            setFilteredRepuestos(filtered);
+          }, [searchTerm, repuestos]);
+    
 
 
     // Funciones para manejar acciones
@@ -190,8 +236,12 @@ export const RepuestosPage = () => {
         Modal.info({
             title: 'Detalles del Repuesto',
             content: (
-                <div>
-                    <p><strong>ID:</strong> {repuesto._id}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    {/* <p><strong>ID:</strong> {repuesto._id}</p> */}
+                    <p><strong>Fecha y Hora de Creación:</strong> {new Date(repuesto.createdAt).toLocaleString('es-ES')}</p>
+                    {repuesto.updatedAt && (
+                        <p><strong>Última Actualización:</strong> {new Date(repuesto.updatedAt).toLocaleString('es-ES')}</p>
+                            )}
                     <p><strong>Nombre:</strong> {repuesto.nombre}</p>
                     <p><strong>Existencias:</strong> {repuesto.existencias}</p>
                     <p><strong>Precio Compra:</strong> ${repuesto.precio?.toLocaleString('es-ES')  || '0.00'}</p>
@@ -305,8 +355,8 @@ export const RepuestosPage = () => {
                 />
                 
                 <Content>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px',}}>
-                        <SearchBar placeholder="Buscar repuesto..."/>
+                    <div className='container-items'>
+                        <SearchBar placeholder="Buscar repuesto..." onSearch={setSearchTerm}/>
                         <Button 
                             type="primary" 
                             icon={<PlusCircleOutlined />} 
@@ -315,7 +365,7 @@ export const RepuestosPage = () => {
                                 setSelectedRepuesto(null);
                                 setModalVisible(true);
                             }}
-                            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                            className='icon-create'
                         >
                             Crear Repuesto
                         </Button>
@@ -323,7 +373,7 @@ export const RepuestosPage = () => {
                     
                     <DataTable 
                         columns={columns}
-                        dataSource={repuestos}
+                        dataSource={filteredRepuestos}
                         loading={loading}
                         fetchData={fetchRepuestos}
                         onView={handleViewRepuesto}

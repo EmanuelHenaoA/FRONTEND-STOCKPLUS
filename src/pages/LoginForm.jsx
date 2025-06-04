@@ -1,11 +1,12 @@
 import React, { useState } from 'react' 
 import '../styles/Login.css' 
-import { FaUser, FaLock, FaArrowLeft } from "react-icons/fa";
+import { FaUserCircle, FaLock, FaArrowLeft } from "react-icons/fa";
 import useNavigationHelpers from '../lib/helpers/navigationHelpers';
 import { loginUsuario } from '../services/authService';
+import Navbar from '../components/Navbar';
 
 export const LoginForm = () => {
-  const {registerForm, landingPage, dashboardPage, forgotPasswordPage} = useNavigationHelpers()
+  const {registerForm, landingPage, dashboardPage, forgotPasswordPage, repuestosView} = useNavigationHelpers()
   const [formData, setFormData] = useState({
     email: '',
     contraseña: '',
@@ -69,7 +70,22 @@ export const LoginForm = () => {
       
       if (response.success) {
         console.log("Logueado exitosamente", response);
-        dashboardPage();
+        // Verificar si el usuario tiene permisos administrativos
+      const hasAdminPermissions = response.data && response.data.permisos && 
+        response.data.permisos.some(permiso => 
+          ['verRepuesto', 'verMarca', 'verCategoria', 'verRol', 'verPermiso', 'verUsuario', 'verVenta', 'verCompra'].includes(
+            typeof permiso === 'string' ? permiso : permiso.nombre
+          )
+        );
+
+      if (hasAdminPermissions) {
+        dashboardPage(); // Usuarios administrativos van al dashboard
+      } else {
+        repuestosView()
+        // Aquí necesitas agregar la función para ir al catálogo
+        // Por ejemplo: catalogoPage(); 
+        // O usar directamente window.location.href = '/repuestos-catalogo';
+      }
       } else {
         // Manejar diferentes tipos de errores
         if (response.errorType === 'email_no_encontrado') {
@@ -98,6 +114,7 @@ export const LoginForm = () => {
           <FaArrowLeft onClick={landingPage} className='back'/>
           <h1 className='logo'>StockPlus</h1>
           <h1>Iniciar Sesión</h1>
+          
         
           
           <div className='input-box'>
@@ -109,7 +126,7 @@ export const LoginForm = () => {
               onChange={handleChange}
               className={errors.email ? 'error-input' : ''}
               />
-            <FaUser className='icon'/>
+            <FaUserCircle className='icon'/>
           </div>
           {errors.email && <p className="field-error-msg">{errors.email}</p>}
           
@@ -127,18 +144,15 @@ export const LoginForm = () => {
           {errors.contraseña && <p className="field-error-msg">{errors.contraseña}</p>}
           {errors.general && <div className="general-error-msg">{errors.general}</div>}
           
-          <div className='remember-forgot'>
-            <label><input type="checkbox" />Recuérdame</label>
-            <a onClick={forgotPasswordPage}>Recupera tu contraseña</a>
-          </div>
-          
           <button type='submit' disabled={loading}>
             {loading ? "Iniciando..." : "Iniciar Sesión"}
           </button>
           
           <div className="register-link">
             <p>¿No tienes una cuenta? <a onClick={registerForm}>Regístrate</a></p>
+            <a onClick={forgotPasswordPage}>Recupera tu contraseña</a>
           </div>
+        
         </form>
       </div>
     </div>

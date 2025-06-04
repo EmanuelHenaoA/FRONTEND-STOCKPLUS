@@ -346,6 +346,7 @@ const BuysModalForm = ({
                 type="primary" 
                 icon={<PlusOutlined />} 
                 onClick={handleAddRepuesto}
+                className="custom-submit-btn" // Agrega esta clase
               >
                 Agregar Repuesto
               </Button>

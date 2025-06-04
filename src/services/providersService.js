@@ -20,3 +20,13 @@ export const deleteProvider = async (id) => {
   const response = await api.delete(`/proveedores/${id}`);
   return response.data;
 };
+
+export const cambiarEstadoProveedor = async (id) => {
+  try{
+      const response = await api.patch(`/proveedores/${id}`);
+      return response.data;
+  } catch (error) {
+      console.error(`Error al cambiar estado de proveedor con id ${id}:`, error);
+      throw error;
+  }
+}

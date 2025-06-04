@@ -32,10 +32,10 @@ const TopClientes = () => {
 
   return (
     <div className="top-customers-container">
-      <h3>Clientes Principales</h3>
+      <h2>Clientes Principales</h2>
       <div className="table-responsive">
         <table className="table">
-          <thead>
+          <thead style={{color: '#888888'}}>
             <tr>
               <th>Cliente</th>
               <th>Total Compras</th>
@@ -47,7 +47,7 @@ const TopClientes = () => {
               <tr key={customer.id}>
                 <td>{customer.nombre}</td>
                 <td>{customer.totalCompras}</td>
-                <td>${customer.montoTotal.toLocaleString('es-ES')}</td>
+                <td style={{color: customer.montoTotal > 100000 ? 'green' : 'black'}}>${customer.montoTotal.toLocaleString('es-ES')}</td>
               </tr>
             ))}
           </tbody>

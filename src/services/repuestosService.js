@@ -10,6 +10,11 @@ export const getRepuestosActivos = async () => {
   return response.data;
 };
 
+export const getRepuestosActivosCliente = async () => {
+  const response = await api.get(`/repuestos/activos-catalogo`);
+  return response.data;
+};
+
 export const getRepuestosCategoria = async (categoriaId) => {
   const response = await api.get(`/repuestos/activos/${categoriaId}`);
   return response.data;

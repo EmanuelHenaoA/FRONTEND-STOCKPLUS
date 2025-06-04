@@ -328,6 +328,7 @@ const SalesModalForm = ({
               />
             </Form.Item>
               
+            <PlusOutlined onc/>
             <Form.Item
               name="idCliente"
               label="Cliente"
@@ -355,6 +356,7 @@ const SalesModalForm = ({
                 type="primary" 
                 icon={<PlusOutlined />} 
                 onClick={handleAddRepuesto}
+                className="custom-submit-btn" // Agrega esta clase
               >
                 Agregar Repuesto
               </Button>

@@ -14,30 +14,30 @@ const RepuestoModalForm = ({
   mode, // 'add' o 'edit'
   categorias = [],
   marcas = [],
-  repuestos = [] 
+  // repuestos = [] 
   
 }) => {
   const [form] = Form.useForm();
 
-   // Añadir un validador personalizado para el ID del repuesto
-   const validateIdRepuesto = (_, value) => {
-    if (!value) return Promise.resolve();
+  //  // Añadir un validador personalizado para el ID del repuesto
+  //  const validateIdRepuesto = (_, value) => {
+  //   if (!value) return Promise.resolve();
     
-    // Si estamos en modo añadir o el ID ha cambiado
-    if (mode === 'add' || value !== initialValues?.idRepuesto) {
-      // Verificar si ya existe
-      const existe = repuestos.some(r => 
-        r.idRepuesto === value && 
-        (mode === 'add' || r._id !== initialValues?._id)
-      );
+  //   // Si estamos en modo añadir o el ID ha cambiado
+  //   if (mode === 'add' || value !== initialValues?.idRepuesto) {
+  //     // Verificar si ya existe
+  //     const existe = repuestos.some(r => 
+  //       r.idRepuesto === value && 
+  //       (mode === 'add' || r._id !== initialValues?._id)
+  //     );
       
-      if (existe) {
-        return Promise.reject(new Error('Este código de repuesto ya está en uso'));
-      }
-    }
+  //     if (existe) {
+  //       return Promise.reject(new Error('Este código de repuesto ya está en uso'));
+  //     }
+  //   }
     
-    return Promise.resolve();
-  };
+  //   return Promise.resolve();
+  // };
   
   // Cargar formulario cuando cambian los valores iniciales
   useEffect(() => {
@@ -91,7 +91,7 @@ const RepuestoModalForm = ({
 
   const calcularPrecioVentaSugerido = (precio) => {
     const precioNum = parseFloat(precio || 0);
-    return precioNum * 1.2;
+    return precioNum * 1.3;
   };
 
   return (
@@ -114,13 +114,13 @@ const RepuestoModalForm = ({
           </Form.Item>
         )}
 
-        <Form.Item
+        {/* <Form.Item
           name="idRepuesto"
           label="Código del Repuesto"
           rules={[{ required: true, message: 'Por favor ingresa un código', unique: true }, {validator: validateIdRepuesto}]}
         >
           <Input placeholder="Código del repuesto" />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="nombre"
           label="Nombre del Repuesto"

@@ -35,22 +35,19 @@ export const BuysPage = () => {
 
     const columns = [
       {
-        title: 'Fecha Creación',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: 'Fecha Compra',
+        dataIndex: 'fecha',
+        key: 'fecha',
         render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
         })
       },
       {
         title: 'Proveedor',
         dataIndex: 'proveedorNombre',
         key: 'proveedorNombre',
-        searchable: true
       },
       {
         title: 'Cantidad de Repuestos',
@@ -62,34 +59,37 @@ export const BuysPage = () => {
         title: 'Total',
         dataIndex: 'total',
         key: 'total',
-        render: (total) => `$${total.toLocaleString('es-ES')}`
+        render: (total) => `$${total.toLocaleString('es-ES',)}`
       },
+      // {
+      //   title: 'Última Actualización',
+      //   dataIndex: 'updatedAt',
+      //   key: 'updatedAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
       {
-        title: 'Última Actualización',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
-      {
-        title: 'Estado',
-        dataIndex: 'estado',
-        key: 'estado',
-        render: (estado) => (
-            <span style={{ 
-                background: estado === 'Completada' ? 'green' : 'red',
-                padding: '8px',
-                borderRadius: '10px',
-            }}>
-                {estado}
-            </span>
-        ) 
-      },
+      title: 'Estado',
+      dataIndex: 'estado',
+      key: 'estado',
+      render: (estado) => (
+          <span style={{ 
+              background: estado === 'Completada' ?  '#28D4471E' : '#D329291E',
+              color: estado === 'Completada' ?  '#53d447' : '#d32929' ,
+              padding: '8px',
+              borderRadius: '0.25rem',
+              border: '1px solid'
+            
+          }}>
+              {estado}
+          </span>
+      ) 
+    },
     ];
       
     // Función para cargar los datos
@@ -293,16 +293,15 @@ export const BuysPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID de Compra:</strong> {compra._id}</Text>
-                            <Text><strong>Fecha de Compra:</strong> {new Date(compra.fecha).toLocaleDateString('es-ES')}</Text>
-                            <Text><strong>Proveedor:</strong> {proveedorNombre}</Text>
-                            <Text><strong>Total:</strong> ${compra.total.toLocaleString('es-ES')}</Text>
+                            {/* <Text><strong>ID de Compra:</strong> {compra._id}</Text> */}
+                            <Text><strong>Fecha y hora de Compra:</strong> {new Date(compra.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})}</Text>
                             <Text><strong>Fecha Creación:</strong> {new Date(compra.createdAt).toLocaleString('es-ES')}</Text>
                             {compra.updatedAt && (
-                                <Text><strong>Última Actualización:</strong> {new Date(compra.updatedAt).toLocaleString('es-ES')}</Text>
+                              <Text><strong>Última Actualización:</strong> {new Date(compra.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
+                            <Text><strong>Proveedor:</strong> {proveedorNombre}</Text>
+                            <Text><strong>Total:</strong> ${compra.total.toLocaleString('es-ES')}</Text>
                         </div>
                     </div>
                     <Table 
@@ -463,8 +462,8 @@ export const BuysPage = () => {
             />
             
             <Content>
-              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
+              <div className='container-items'>
+                <div>
                   <SearchBar placeholder="Buscar compra..."/>
                 </div>
                 <Button 
@@ -478,7 +477,7 @@ export const BuysPage = () => {
                     fetchRepuestosActivos();
                     setModalVisible(true);
                   }}
-                  style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                  className='icon-create'
                 >
                   Crear Compra
                 </Button>

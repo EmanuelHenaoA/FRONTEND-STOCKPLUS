@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Input, Button, Select } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 
 const ProvidersModalForm = ({
@@ -47,7 +47,7 @@ const ProvidersModalForm = ({
             type="primary"
             loading={confirmLoading}
             onClick={() => form.submit()}
-            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+            className="custom-submit-btn" // Agrega esta clase
             >
                 {mode === 'add' ? 'Crear' : 'Actualizar'}
             </Button>
@@ -90,6 +90,16 @@ const ProvidersModalForm = ({
                     >
                       <Input placeholder="Email del cliente" type="email" />
                     </Form.Item>
+        <Form.Item
+          name="estado"
+          label="Estado"
+          rules={[{ required: true, message: 'Por favor selecciona un estado' }]}
+        >
+          <Select placeholder="Selecciona un estado">
+            <Option value="Activo">Activo</Option>
+            <Option value="Inactivo">Inactivo</Option>
+          </Select>
+        </Form.Item>
             </Form>
         
         </Modal>

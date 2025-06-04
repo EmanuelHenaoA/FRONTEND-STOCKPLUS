@@ -19,6 +19,8 @@ export const BransPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [marcas, setMarcas] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredMarcas, setFilteredMarcas] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm(); // Crear instancia del formulario
     const { Title, Text } = Typography;
@@ -35,13 +37,16 @@ export const BransPage = () => {
             title: 'Nombre',
             dataIndex: 'nombre',
             key: 'nombre',
-            searchable: true,
         },
         {
             title: 'Fecha Creación',
             dataIndex: 'createdAt',
             key: 'createdAt',
-            render: (fecha) => fecha ? new Date(fecha).toLocaleDateString('es-ES') : 'N/A'
+            render: (fecha) => fecha ? new Date(fecha).toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              }) : 'No se puede encontrar'
         },
         {
             title: 'Última Actualización',
@@ -51,20 +56,21 @@ export const BransPage = () => {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
               })
         },
-        {
+         {
             title: 'Estado',
             dataIndex: 'estado',
             key: 'estado',
             render: (estado) => (
                 <span style={{ 
-                    background: estado === 'Activo' ? 'green' : 'red',
+                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
                     padding: '8px',
-                    borderRadius: '10px',
-                }}>
+                    borderRadius: '0.25rem',
+                    border: '1px solid'
+                    
+                    }}>
                     {estado}
                 </span>
             ) 
@@ -102,6 +108,23 @@ export const BransPage = () => {
     }, []);
 
 
+      useEffect(() => {
+        if (!searchTerm) {
+          setFilteredMarcas(marcas);
+          return;
+        }
+        
+        const filtered = marcas.filter(marca => {
+          const searchTermLower = searchTerm.toLowerCase();
+          return (
+            (marca.nombre && marca.nombre.toLowerCase().includes(searchTermLower)) ||
+            (marca.estado && marca.estado.toLowerCase().includes(searchTermLower))
+          );
+        });
+        
+        setFilteredMarcas(filtered);
+      }, [searchTerm, marcas]);
+
     // Funciones para manejar acciones
     const handleViewMarca = (marca) => {
         console.log('Ver detalles del marca:', marca);
@@ -114,13 +137,13 @@ export const BransPage = () => {
                     <div style={{ marginBottom: '20px' }}>
                         <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {marca._id}</Text>
+                            {/* <Text><strong>ID:</strong> {marca._id}</Text> */}
                             <Text><strong>Nombre:</strong> {marca.nombre}</Text>
                             <Text><strong>Estado:</strong> {marca.activo ? 'Activo' : 'Inactivo'}</Text>
-                            <Text><strong>Fecha Creación:</strong> {new Date(marca.createdAt).toLocaleString('es-ES')}</Text>
                             {marca.updatedAt && (
                                 <Text><strong>Última Actualización:</strong> {new Date(marca.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
+                            <Text><strong>Fecha y hora de Creación:</strong> {new Date(marca.createdAt).toLocaleString('es-ES')}</Text>
                         </div>
                     </div>
                 </div>
@@ -227,9 +250,9 @@ const handleSubmitMarca = async (formData) => {
                 />
             
                 <Content>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <SearchBar placeholder="Buscar marca..."/>
+                    <div className='container-items'>
+                        <div>
+                            <SearchBar placeholder="Buscar marca..." onSearch={setSearchTerm}/>
                         </div>
                         <Button 
                             type="primary" 
@@ -240,7 +263,7 @@ const handleSubmitMarca = async (formData) => {
                                 setSelectedMarca(null);
                                 setModalVisible(true);
                             }}
-                            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                            className='icon-create'
                         >
                             Crear Marca
                         </Button>
@@ -248,7 +271,7 @@ const handleSubmitMarca = async (formData) => {
               
                     <DataTable 
                         columns={columns}
-                        dataSource={marcas}
+                        dataSource={filteredMarcas}
                         loading={loading}
                         fetchData={fetchMarcas}
                         onView={handleViewMarca}

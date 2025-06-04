@@ -32,10 +32,10 @@ const RepuestosStockBajo = () => {
 
   return (
     <div className="low-stock-container">
-      <h3>Repuestos con Stock Bajo</h3>
+      <h2>Repuestos con Stock Bajo</h2>
       <div className="table-responsive">
         <table className="table">
-          <thead>
+          <thead style={{color: '#888888'}}>
             <tr>
               <th>Repuesto</th>
               <th>Categoría</th>
@@ -47,10 +47,10 @@ const RepuestosStockBajo = () => {
           <tbody>
             {repuestos.map((repuesto) => (
               <tr key={repuesto.id} className={repuesto.existencias <= repuesto.stockMinimo ? "stock-critical" : ""}>
-                <td>{repuesto.nombre}</td>
-                <td>{repuesto.categoria}</td>
-                <td>{repuesto.marca}</td>
-                <td>{repuesto.existencias}</td>
+                <td style={{color: repuesto.existencias === 0 ? '#d32929' : ''}}>{repuesto.nombre}</td>
+                <td style={{color: repuesto.existencias === 0 ? '#d32929' : ''}}>{repuesto.categoria}</td>
+                <td style={{color: repuesto.existencias === 0 ? '#d32929' : ''}}>{repuesto.marca}</td>
+                <td style={{color: repuesto.existencias === 0 ? '#d32929' : ''}}>{repuesto.existencias}</td>
                 {/* <td>{repuesto.stockMinimo}</td> */}
               </tr>
             ))}

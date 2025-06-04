@@ -11,6 +11,7 @@ import RepuestosMayorIngreso from '../components/dashboard/RepuestosMayorIngreso
 import VentasPorCategoria from '../components/dashboard/VentasPorCategoria';
 import VentasMensuales from '../components/dashboard/VentasMensuales';
 import RepuestosStockBajo from '../components/dashboard/RepuestosStockBajo';
+import {ToolOutlined, UserSwitchOutlined, FundOutlined, CarryOutOutlined, FallOutlined} from "@ant-design/icons";
 import '../styles/Dashboard.css';
 
 export const Dashboard = () => {
@@ -75,36 +76,41 @@ export const Dashboard = () => {
 {/* Cards de estadísticas generales */}
       <div className="stats-cards">
         <div className="stat-card">
+          <CarryOutOutlined style={{fontSize: '30px', color: '#feb95a', marginBottom: '10px'}} />
           <h3>Total Vendido Del Mes</h3>
           <p className="stat-number">${stats.ventasMes.total.toLocaleString('es-ES')}</p>
-          <p className="stat-subtitle">{stats.ventasMes.cantidad} ventas</p>
+          <p className="stat-subtitle"><strong>Cantidad: </strong>{stats.ventasMes.cantidad} Ventas</p>
         </div>
         
         <div className="stat-card">
+          <ToolOutlined style={{fontSize: '30px', color: '#f2c8ed', marginBottom: '10px'}} />
           <h3>Total Repuestos</h3>
           <p className="stat-number">{stats.totalRepuestos}</p>
+          <p className="stat-subtitle">Activos</p>
         </div>
         
         <div className="stat-card">
+          <UserSwitchOutlined style={{fontSize: '30px', color: '#a9dfd8', marginBottom: '10px'}}/>
           <h3>Total Clientes</h3>
           <p className="stat-number">{stats.totalClientes}</p>
         </div>
         
         <div className="stat-card alert">
+          <FallOutlined style={{fontSize: '30px', color: '#e74c3c ', marginBottom: '10px'}} />
           <h3>Stock Bajo</h3>
           <p className="stat-number">{stats.repuestosStockBajo}</p>
-          <p className="stat-subtitle">repuestos</p>
+          <p className="stat-subtitle">Repuestos</p>
         </div>
       </div>
 
 {/* Gráficos principales */}
       <div className="charts-container">
         <div className="chart-item">
-          <VentasSemanales />
+        <TopClientes />
         </div>
         
         <div className="chart-item">
-        <TopClientes />
+          <VentasSemanales />
         </div>
       </div>
 
@@ -119,21 +125,20 @@ export const Dashboard = () => {
   </div>
   <div className="charts-container">
   <div className="chart-item">
-    <RepuestosStockBajo />
+    <RepuestosMasVendidos />
   </div>
 </div>
 </div>
 
 {/* Tablas de productos */}
-<div className="charts-container">
-  <div className="chart-item">
-    <RepuestosMasVendidos />
+  <div className="chart-item-ultimate">
+    <RepuestosStockBajo />
   </div>
   
-  <div className="chart-item">
+  {/* <div className="chart-item">
     <RepuestosMayorIngreso />
-  </div>
-</div>
+  </div> */}
+
 
 </div>
       </Content>

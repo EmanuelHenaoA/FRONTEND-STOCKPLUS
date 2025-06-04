@@ -38,43 +38,51 @@ export const UsersPage = () => {
       title: 'Nombre',
       dataIndex: 'nombre',
       key: 'nombre',
-      searchable: true,
+
     },
     {
       title: 'Documento',
       dataIndex: 'documento',
       key: 'documento',
-      searchable: true,
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-      searchable: true,
-    },
-    {
-      title: 'Telefono',
-      dataIndex: 'telefono',
-      key: 'nombre',
-      searchable: true,
+
     },
     {
       title: "Rol",
       dataIndex: "rol", // 🔥 Aquí está la referencia al campo `idRol` que ya está populado
       key: "rol",
-      render: (rol) => {
-          return rol && rol.nombre ? rol.nombre : "Sin rol"; // 🔥 Acceder al nombre en lugar del ID
-      }
+           render: (rol) => (
+          <span style={{ 
+              // color: rol.nombre === 'Administrador' ?  'gold' : 'white' ,
+              fontWeight: rol.nombre === 'Administrador' ?  '550' : '400',
+          }}>
+              {rol.nombre}
+          </span>
+      ) 
     },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+
+    },
+    // {
+    //   title: 'Telefono',
+    //   dataIndex: 'telefono',
+    //   key: 'nombre',
+    //   searchable: true,
+    // },
     {
       title: 'Estado',
       dataIndex: 'estado',
       key: 'estado',
       render: (estado) => (
           <span style={{ 
-              background: estado === 'Activo' ? 'green' : 'red',
+              background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+              color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
               padding: '8px',
-              borderRadius: '10px',
+              borderRadius: '0.25rem',
+              border: '1px solid'
+            
           }}>
               {estado}
           </span>
@@ -162,7 +170,8 @@ export const UsersPage = () => {
             (user.documento && String(user.documento).toLowerCase().includes(searchTermLower)) ||
             (user.telefono && String(user.telefono).toLowerCase().includes(searchTermLower)) ||
             (user.email && user.email.toLowerCase().includes(searchTermLower)) ||
-            (user.rol && user.rol.nombre && user.rol.nombre.toLowerCase().includes(searchTermLower))
+            (user.rol && user.rol.nombre && user.rol.nombre.toLowerCase().includes(searchTermLower)) ||
+            (user.estado && user.estado.toLowerCase().includes(searchTermLower))
           );
         });
         
@@ -176,8 +185,10 @@ export const UsersPage = () => {
     Modal.info({
       title: 'Detalles del Usuario',
       content: (
-        <div>
-          <p><strong>ID:</strong> {user._id}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <p><strong>Creado:</strong> {new Date(user.createdAt).toLocaleString('es-ES')} </p>
+          <p><strong>Ultima Actualización:</strong> {new Date(user.updatedAt).toLocaleString('es-ES')}</p>
+          <p><strong>Documento:</strong> {user.documento}</p>
           <p><strong>Nombre:</strong> {user.nombre}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Teléfono:</strong> {user.telefono || 'No especificado'}</p>
@@ -304,7 +315,7 @@ export const UsersPage = () => {
         />
         
         <Content>
-          <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px',}}>
+          <div className='container-items'>
             <SearchBar placeholder="Buscar usuario..." onSearch={setSearchTerm}/>
             <Button 
               type="primary" 
@@ -314,7 +325,7 @@ export const UsersPage = () => {
                 setSelectedUser(null);
                 setModalVisible(true);
               }}
-              style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+              className='icon-create'
             >
               Crear Usuario
             </Button>

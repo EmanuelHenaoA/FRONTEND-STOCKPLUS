@@ -9,6 +9,7 @@ import DataTable from '../components/DataTable';
 import ProvidersModalForm from '../components/modals/ProvidersModalForm';
 import api from '../services/axiosConfig';
 import { useNavigate } from "react-router-dom";
+import { cambiarEstadoProveedor } from '../services/providersService';
 
 const { confirm } = Modal;
 const { Title, Text } = Typography;
@@ -18,12 +19,15 @@ export const ProvidersPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [proveedores, setProveedores] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProviders, setFilteredProviders] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm();
     
     // Estados para los modales
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMode, setModalMode] = useState('add'); // 'add' o 'edit'
+    const [changingStatusId, setChangingStatusId] = useState(null);
     const [selectedProveedor, setSelectedProveedor] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -32,7 +36,7 @@ export const ProvidersPage = () => {
         title: 'Nombre',
         dataIndex: 'nombre',
         key: 'nombre',
-        searchable: true
+       
       },
       {
         title: 'Teléfono',
@@ -43,32 +47,49 @@ export const ProvidersPage = () => {
         title: 'Email',
         dataIndex: 'email',
         key: 'email',
-        searchable: true
+       
       },
       {
-        title: 'Fecha Creación',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
-      {
-        title: 'Última Actualización',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
+            title: 'Estado',
+            dataIndex: 'estado',
+            key: 'estado',
+            render: (estado) => (
+                <span style={{ 
+                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
+                    padding: '8px',
+                    borderRadius: '0.25rem',
+                    border: '1px solid'
+                    
+                    }}>
+                    {estado}
+                </span>
+            ) 
+        },
+      // {
+      //   title: 'Fecha Creación',
+      //   dataIndex: 'createdAt',
+      //   key: 'createdAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
+      // {
+      //   title: 'Última Actualización',
+      //   dataIndex: 'updatedAt',
+      //   key: 'updatedAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
     ];
       
     // Función para cargar los datos
@@ -111,6 +132,26 @@ export const ProvidersPage = () => {
     useEffect(() => {
       console.log("Proveedores actualizado:", proveedores);
     }, [proveedores]);
+
+    useEffect(() => {
+      if (!searchTerm) {
+            setFilteredProviders(processedProveedores);
+            return;
+          }
+
+          const filtered = proveedores.filter(proveedor => { // Cambiar sales por processedSales
+            const searchTermLower = searchTerm.toLowerCase();
+            return (
+              (proveedor.telefono && String(proveedor.telefono).toLowerCase().includes(searchTermLower)) ||
+              (proveedor.email && proveedor.email.toLowerCase().includes(searchTermLower)) ||
+              (proveedor.proveedorNombre && proveedor.proveedorNombre && proveedor.proveedorNombre.toLowerCase().includes(searchTermLower)) ||
+              (proveedor.estado && proveedor.estado.toLowerCase().includes(searchTermLower))
+              
+            );
+          });
+          setFilteredProviders(filtered);
+        }, [searchTerm, proveedores]);
+
       
 
     // Funciones para manejar acciones
@@ -123,16 +164,16 @@ export const ProvidersPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {proveedor._id}</Text>
-                            <Text><strong>Nombre:</strong> {proveedor.nombre}</Text>
-                            <Text><strong>Teléfono:</strong> {proveedor.telefono}</Text>
-                            <Text><strong>Email:</strong> {proveedor.email}</Text>
+                            {/* <Text><strong>ID:</strong> {proveedor._id}</Text> */}
                             <Text><strong>Fecha Creación:</strong> {new Date(proveedor.createdAt).toLocaleString('es-ES')}</Text>
                             {proveedor.updatedAt && (
                                 <Text><strong>Última Actualización:</strong> {new Date(proveedor.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
+                            <Text><strong>Nombre:</strong> {proveedor.nombre}</Text>
+                            <Text><strong>Teléfono:</strong> {proveedor.telefono}</Text>
+                            <Text><strong>Email:</strong> {proveedor.email}</Text>
+                            <Text><strong>Estado:</strong> {proveedor.estado}</Text>
                         </div>
                     </div>
                 </div>
@@ -148,6 +189,21 @@ export const ProvidersPage = () => {
         setSelectedProveedor(proveedor);
         setModalVisible(true);
     };
+
+          // Función para manejar el cambio de estado
+          const handleToggleStatus = async (proveedor) => {
+            setChangingStatusId(proveedor._id);
+            try {
+                const response = await cambiarEstadoProveedor(proveedor._id);
+                message.success(`Estado del proveedor cambiado a ${response.proveedor.estado}`);
+                fetchProveedores()
+            } catch (error) {
+                console.error('Error al cambiar estado del proveedor:', error);
+                message.error('Error al cambiar el estado del proveedor');
+            } finally {
+                setChangingStatusId(null);
+            }
+        };
 
     const handleDeleteProveedor = (proveedor) => {
         console.log('handleDeleteProveedor llamado con:', proveedor);
@@ -234,9 +290,9 @@ export const ProvidersPage = () => {
             />
             
             <Content>
-              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
+              <div className='container-items'>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <SearchBar placeholder="Buscar proveedor..."/>
+                  <SearchBar placeholder="Buscar proveedor..." onSearch={setSearchTerm}/>
                 </div>
                 <Button 
                   type="primary" 
@@ -247,7 +303,7 @@ export const ProvidersPage = () => {
                     setSelectedProveedor(null);
                     setModalVisible(true);
                   }}
-                  style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                  className='icon-create'
                 >
                   Crear Proveedor
                 </Button>
@@ -255,12 +311,16 @@ export const ProvidersPage = () => {
               
               <DataTable 
                 columns={columns}
-                dataSource={processedProveedores}
+                dataSource={searchTerm ? filteredProviders : processedProveedores}
                 loading={loading}
                 fetchData={fetchProveedores}
                 onView={handleViewProveedor}
                 onEdit={handleEditProveedor}
                 onDelete={handleDeleteProveedor}
+                onToggleStatus={handleToggleStatus} 
+                toggleStatusLoading={changingStatusId !== null}  // Para controlar estado de carga
+                toggleStatusIdLoading={changingStatusId}  // ID del elemento cambiando estado
+                showToggleStatus={true}  // Mostrar botón de cambio de estado
               />
             </Content>
           </Layout>

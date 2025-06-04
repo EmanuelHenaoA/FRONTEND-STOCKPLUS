@@ -1,6 +1,6 @@
 import React, { useState } from 'react' 
 import '../styles/Login.css' 
-import { FaArrowLeft, FaUser, FaLock, FaPhone, FaAddressCard, FaVoicemail} from "react-icons/fa"; 
+import { FaArrowLeft, FaLock, FaAddressCard,  FaMailBulk, FaKey, FaUserCircle, FaPhoneSquare} from "react-icons/fa"; 
 import useNavigationHelpers from '../lib/helpers/navigationHelpers'; 
 import {registrarUsuario} from '../services/authService'
 
@@ -90,8 +90,7 @@ export const RegisterForm = () => {
       <div className='wrapper'>
         <form onSubmit={handleSubmit}>
           <FaArrowLeft onClick={landingPage} className='back'/>
-          <h1 className='logo'>StockPlus</h1>
-          <h1>Registro</h1>
+          <h1>Registrarse</h1>
           <div className='input-box'>
             <input 
               type="text" 
@@ -101,7 +100,7 @@ export const RegisterForm = () => {
               onChange={handleChange}
               className={errors.nombre ? 'error-input' : ''}
               />
-            <FaUser className='icon'/>
+            <FaUserCircle className='icon'/>
           </div>
           {errors.nombre && <p className="field-error-msg">{errors.nombre}</p>}
           
@@ -114,7 +113,7 @@ export const RegisterForm = () => {
               onChange={handleChange}
               className={errors.documento ? 'error-input' : ''}
               />
-            <FaPhone className='icon'/>
+            <FaKey className='icon'/>
           </div>
           {errors.documento && <p className="field-error-msg">{errors.documento}</p>}
 
@@ -127,7 +126,7 @@ export const RegisterForm = () => {
               onChange={handleChange}
               className={errors.telefono ? 'error-input' : ''}
               />
-            <FaPhone className='icon'/>
+            <FaPhoneSquare className='icon'/>
           </div>
           {errors.telefono && <p className="field-error-msg">{errors.telefono}</p>}
 
@@ -155,7 +154,7 @@ export const RegisterForm = () => {
               onChange={handleChange}
               className={errors.email ? 'error-input' : ''}
               />
-            <FaVoicemail className='icon'/>
+            <FaMailBulk className='icon'/>
           </div>
           {errors.email && <p className="field-error-msg">{errors.email}</p>}
           

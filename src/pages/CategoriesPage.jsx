@@ -18,6 +18,8 @@ export const CategoriesPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [categorias, setCategorias] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCategorias, setFilteredCategorias] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm(); // Crear instancia del formulario
     const { Title, Text } = Typography;
@@ -60,10 +62,13 @@ export const CategoriesPage = () => {
             key: 'estado',
             render: (estado) => (
                 <span style={{ 
-                    background: estado === 'Activo' ? 'green' : 'red',
+                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
                     padding: '8px',
-                    borderRadius: '10px',
-                }}>
+                    borderRadius: '0.25rem',
+                    border: '1px solid'
+                    
+                    }}>
                     {estado}
                 </span>
             ) 
@@ -102,6 +107,23 @@ export const CategoriesPage = () => {
         fetchCategorias();
     }, []);
 
+    useEffect(() => {
+        if (!searchTerm) {
+          setFilteredCategorias(categorias);
+          return;
+        }
+        
+        const filtered = categorias.filter(categoria => {
+          const searchTermLower = searchTerm.toLowerCase();
+          return (
+            (categoria.nombre && categoria.nombre.toLowerCase().includes(searchTermLower)) ||
+            (categoria.estado && categoria.estado.toLowerCase().includes(searchTermLower))
+          );
+        });
+        
+        setFilteredCategorias(filtered);
+      }, [searchTerm, categorias]);
+
     // Funciones para manejar acciones
     const handleViewCategoria = (categoria) => {
         console.log('Ver detalles del categoria:', categoria);
@@ -112,12 +134,11 @@ export const CategoriesPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {categoria._id}</Text>
+                            {/* <Text><strong>ID:</strong> {categoria._id}</Text> */}
                             <Text><strong>Nombre:</strong> {categoria.nombre}</Text>
-                            <Text><strong>Estado:</strong> {categoria.activo ? 'Activo' : 'Inactivo'}</Text>
-                            <Text><strong>Fecha Creación:</strong> {new Date(categoria.createdAt).toLocaleString('es-ES')}</Text>
+                            <Text><strong>Estado:</strong> {categoria.estado}</Text>
+                            <Text><strong>Fecha y Hora de Creación:</strong> {new Date(categoria.createdAt).toLocaleString('es-ES')}</Text>
                             {categoria.updatedAt && (
                                 <Text><strong>Última Actualización:</strong> {new Date(categoria.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
@@ -227,9 +248,9 @@ const handleSubmitCategoria = async (formData) => {
                 />
             
                 <Content>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <SearchBar placeholder="Buscar categoria..."/>
+                    <div className='container-items'>
+                        <div>
+                            <SearchBar placeholder="Buscar categoria..." onSearch={setSearchTerm}/>
                         </div>
                         <Button 
                             type="primary" 
@@ -240,7 +261,7 @@ const handleSubmitCategoria = async (formData) => {
                                 setSelectedCategoria(null);
                                 setModalVisible(true);
                             }}
-                            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                            className='icon-create'
                         >
                             Crear Categoria
                         </Button>
@@ -248,7 +269,7 @@ const handleSubmitCategoria = async (formData) => {
               
                     <DataTable 
                         columns={columns}
-                        dataSource={categorias}
+                        dataSource={filteredCategorias}
                         loading={loading}
                         fetchData={fetchCategorias}
                         onView={handleViewCategoria}

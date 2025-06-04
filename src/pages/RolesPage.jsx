@@ -18,6 +18,8 @@ export const RolesPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [roles, setRoles] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredRoles, setFilteredRoles] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm(); // Crear instancia del formulario
     const { Title, Text } = Typography;
@@ -72,16 +74,19 @@ export const RolesPage = () => {
                 minute: '2-digit'
               })
         },
-        {
+              {
             title: 'Estado',
             dataIndex: 'estado',
             key: 'estado',
             render: (estado) => (
                 <span style={{ 
-                    background: estado === 'Activo' ? 'green' : 'red',
+                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
+                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
                     padding: '8px',
-                    borderRadius: '10px',
-                }}>
+                    borderRadius: '0.25rem',
+                    border: '1px solid'
+                    
+                    }}>
                     {estado}
                 </span>
             ) 
@@ -115,6 +120,24 @@ export const RolesPage = () => {
         fetchRoles();
     }, []);
 
+      useEffect(() => {
+            if (!searchTerm) {
+              setFilteredRoles(roles);
+              return;
+            }
+            
+            const filtered = roles.filter(rol => {
+              const searchTermLower = searchTerm.toLowerCase();
+              return (
+                (rol.nombre && rol.nombre.toLowerCase().includes(searchTermLower)) ||
+                (rol.estado && rol.estado.toLowerCase().includes(searchTermLower))
+              );
+            });
+            
+            setFilteredRoles(filtered);
+          }, [searchTerm, roles]);
+    
+
     // Funciones para manejar acciones
     const handleViewRol = (rol) => {
         console.log('Ver detalles del rol:', rol);
@@ -125,9 +148,9 @@ export const RolesPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
+                        {/* <Title level={5}>Información General</Title> */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID del Rol:</strong> {rol._id}</Text>
+                            {/* <Text><strong>ID del Rol:</strong> {rol._id}</Text> */}
                             <Text><strong>Nombre:</strong> {rol.nombre}</Text>
                             <Text><strong>Estado:</strong> {rol.estado}</Text>
                             <Text><strong>Fecha Creación:</strong> {new Date(rol.createdAt).toLocaleString('es-ES')}</Text>
@@ -147,7 +170,7 @@ export const RolesPage = () => {
                             columns={[
                                 { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
                             ]} 
-                            pagination={false}
+                            pagination={true}
                             size="small"
                             bordered
                         />
@@ -259,9 +282,9 @@ const handleSubmitRol = async (formData) => {
                 />
             
                 <Content>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <SearchBar placeholder="Buscar rol..."/>
+                    <div className='container-items'>
+                        <div>
+                            <SearchBar placeholder="Buscar rol..." onSearch={setSearchTerm}/>
                         </div>
                         <Button 
                             type="primary" 
@@ -272,7 +295,7 @@ const handleSubmitRol = async (formData) => {
                                 setSelectedRol(null);
                                 setModalVisible(true);
                             }}
-                            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                            className='icon-create'
                         >
                             Crear Rol
                         </Button>
@@ -280,7 +303,7 @@ const handleSubmitRol = async (formData) => {
               
                     <DataTable 
                         columns={columns}
-                        dataSource={roles}
+                        dataSource={filteredRoles}
                         loading={loading}
                         fetchData={fetchRoles}
                         onView={handleViewRol}

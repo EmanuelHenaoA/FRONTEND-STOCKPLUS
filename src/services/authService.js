@@ -1,6 +1,6 @@
 import api from "./axiosConfig";
 
-// Login con guardado de token
+// Login con guardado de token y permisos
 const loginUsuario = async (email, contraseña) => {
   try {
     // Validación básica en el lado cliente
@@ -36,8 +36,22 @@ const loginUsuario = async (email, contraseña) => {
     localStorage.setItem("tokenType", tokenType || 'Bearer');
     
     // Guardar info del usuario si está disponible
-     if (data) {
+    if (data) {
       console.log("✅ Guardando datos de usuario:", data);
+      
+      // Asegurarnos que guardamos los permisos del usuario si están disponibles
+      if (!data.permisos && data.rol) {
+        // Si no tenemos permisos explícitos pero sí un rol, intentamos solicitar los permisos para ese rol
+        try {
+          const permisosResponse = await api.get(`/roles-permisos/por-rol/${data.rol}`);
+          if (permisosResponse.data && permisosResponse.data.permisos) {
+            data.permisos = permisosResponse.data.permisos;
+          }
+        } catch (error) {
+          console.warn("No se pudieron obtener permisos del rol:", error);
+        }
+      }
+      
       localStorage.setItem("user", JSON.stringify(data));
     }
     
@@ -54,26 +68,9 @@ const loginUsuario = async (email, contraseña) => {
       msg: error.response?.data?.msg || "Error de conexión con el servidor"
     };
     
-    // Analizar el mensaje de error para determinar el tipo de problema
-    const errorMessage = error.response?.data?.msg || "";
-    
     // Si el backend proporciona información específica sobre el error
     if (error.response?.data?.errorType) {
       errorResponse.errorType = error.response.data.errorType;
-    } 
-    // Si no hay un tipo de error explícito, intentamos inferirlo del mensaje
-    else if (errorMessage.toLowerCase().includes("no encontrado") || 
-        errorMessage.toLowerCase().includes("no existe") || 
-        errorMessage.toLowerCase().includes("no registrado") ||
-        errorMessage.toLowerCase().includes("correo electrónico")) {
-      errorResponse.errorType = 'email_no_encontrado';
-      errorResponse.msg = "El correo electrónico no está registrado en el sistema";
-    } else if (errorMessage.toLowerCase().includes("contraseña") || 
-               errorMessage.toLowerCase().includes("credenciales") || 
-               errorMessage.toLowerCase().includes("clave") || 
-               errorMessage.toLowerCase().includes("incorrecta")) {
-      errorResponse.errorType = 'contraseña_incorrecta';
-      errorResponse.msg = "La contraseña ingresada es incorrecta";
     } else {
       errorResponse.errorType = 'error_general';
     }
@@ -148,15 +145,102 @@ const getCurrentUser = () => {
 };
 
 // Verificar si el usuario está autenticado
-const isAuthenticated = () => {
-  return !!localStorage.getItem('token');
+export const isAuthenticated = () => {
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+  
+  // Si no hay token o usuario, no está autenticado
+  if (!token || !user) return false;
+  
+  try {
+    // Verificar que el token sea válido (formato JWT)
+    const parts = token.split('.');
+    if (parts.length !== 3) return false;
+    
+    // Verificar expiración si está disponible
+    const payload = JSON.parse(atob(parts[1]));
+    if (payload.exp) {
+      const now = Date.now() / 1000;
+      if (payload.exp < now) return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error verificando autenticación:", error);
+    return false;
+  }
 };
+
 
 // Obtener el token para las peticiones
 const getAuthToken = () => {
   const token = localStorage.getItem('token');
   const tokenType = localStorage.getItem('tokenType') || 'Bearer';
   return token ? `${tokenType} ${token}` : '';
+};
+
+// Verificar si el usuario tiene un permiso específico
+// Verificar si el usuario tiene un permiso específico
+const hasPermission = (permiso) => {
+  const user = getCurrentUser();
+  
+  // Si no hay usuario, no tiene permisos
+  if (!user) return false;
+  
+  // Si el usuario es administrador, tiene todos los permisos
+  if (user && user.rol && (user.rol === 'Administrador' || user.rol.nombre === 'Administrador')) {
+    return true;
+  }
+  
+  // Buscar primero en permisos directos del usuario
+  if (user.permisos && Array.isArray(user.permisos)) {
+    const tienePermiso = user.permisos.some(p => 
+      (typeof p === 'string' && p === permiso) || 
+      (p.nombre && p.nombre === permiso)
+    );
+    if (tienePermiso) return true;
+  }
+  
+  // Buscar en los permisos del rol si existe
+  if (user.rol && user.rol.permisos && Array.isArray(user.rol.permisos)) {
+    return user.rol.permisos.some(p => 
+      (typeof p === 'string' && p === permiso) || 
+      (p.nombre && p.nombre === permiso)
+    );
+  }
+  
+  return false;
+};
+
+// Verificar si el usuario tiene al menos uno de los permisos de la lista
+const hasAnyPermission = (listaPermisos) => {
+  if (!listaPermisos || listaPermisos.length === 0) return false;
+  
+  return listaPermisos.some(permiso => hasPermission(permiso));
+};
+
+// Actualizar perfil del usuario
+const actualizarUsuario = async (userData) => {
+  try {
+    const response = await api.put("/usuarios/perfil", userData);
+    
+    // Actualizar datos en localStorage si la actualización fue exitosa
+    if (response.data.success) {
+      const currentUser = getCurrentUser();
+      const updatedUser = { ...currentUser, ...userData };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+    
+    return {
+      success: true,
+      ...response.data
+    };
+  } catch (error) {
+    return {
+      success: false,
+      msg: error.response?.data?.msg || "Error al actualizar perfil"
+    };
+  }
 };
 
 // Exportar todas las funciones en un objeto
@@ -168,7 +252,10 @@ const authService = {
   resetearContraseña,
   getCurrentUser,
   isAuthenticated,
-  getAuthToken
+  getAuthToken,
+  hasPermission,
+  hasAnyPermission,
+  actualizarUsuario
 };
 
 export default authService;
@@ -179,6 +266,8 @@ export {
   enviarTokenRecuperacion,
   resetearContraseña,
   getCurrentUser,
-  isAuthenticated,
-  getAuthToken
+  getAuthToken,
+  hasPermission,
+  hasAnyPermission,
+  actualizarUsuario
 };

@@ -32,7 +32,15 @@ const useNavigationHelpers = () => {
     navigate("/compras")
   }
 
-  return { loginForm, registerForm, landingPage, rolesPage, dashboardPage, forgotPasswordPage, buysPage };
+  const catalogPage = () => {
+    navigate ("/catalogo")
+  }
+
+  const repuestosView = () => {
+    navigate ("/repuestos-catalogo")
+  }
+
+  return { loginForm, registerForm, landingPage, rolesPage, dashboardPage, forgotPasswordPage, buysPage, catalogPage, repuestosView };
 };
 
 export default useNavigationHelpers;

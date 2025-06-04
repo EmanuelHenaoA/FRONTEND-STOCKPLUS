@@ -32,10 +32,10 @@ const RepuestosMasVendidos = () => {
 
   return (
     <div className="top-products-container">
-      <h3>Repuestos Más Vendidos</h3>
+      <h2>Más Vendidos</h2>
       <div className="table-responsive">
         <table className="table">
-          <thead>
+          <thead style={{color: '#888888'}}>
             <tr>
               <th>Repuesto</th>
               <th>Categoría</th>

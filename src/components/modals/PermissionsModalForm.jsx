@@ -53,7 +53,6 @@ const PermissionsModalForm = ({
           type="primary"
           loading={confirmLoading}
           onClick={() => form.submit()}
-          style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
         >
           {mode === 'add' ? 'Crear' : 'Actualizar'}
         </Button>

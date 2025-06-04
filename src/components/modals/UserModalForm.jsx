@@ -112,7 +112,7 @@ const UserModalForm = ({
         <Form.Item
           name="nombre"
           label="Nombre"
-          rules={[{ required: true, message: 'Por favor ingresa un nombre real', min: 3 }]}
+          rules={[{ required: true, message: 'Por favor ingresa un nombre real', min: 3, max: 43 }]}
           >
           <Input placeholder="Nombre completo" />
         </Form.Item>

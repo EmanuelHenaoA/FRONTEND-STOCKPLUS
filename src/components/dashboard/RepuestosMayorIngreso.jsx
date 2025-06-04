@@ -32,10 +32,10 @@ const RepuestosMayorIngreso = () => {
 
   return (
     <div className="top-revenue-products-container">
-      <h3>Repuestos con Mayor Ingreso</h3>
+      <h2>Mayores Ingresos</h2>
       <div className="table-responsive">
         <table className="table">
-          <thead>
+          <thead style={{color: '#888888'}}>
             <tr>
               <th>Nombre</th>
               <th>Categoría</th>
@@ -50,8 +50,8 @@ const RepuestosMayorIngreso = () => {
                 <td>{repuesto.nombre}</td>
                 <td>{repuesto.categoria}</td>
                 <td>{repuesto.marca}</td>
-                <td>${repuesto.precioVenta?.toLocaleString('es-ES')}</td>
-                <td>${repuesto.totalIngreso.toLocaleString('es-ES')}</td>
+                <td >${repuesto.precioVenta?.toLocaleString('es-ES')}</td>
+                <td style={{color: 'green'}}>${repuesto.totalIngreso.toLocaleString('es-ES')}</td>
               </tr>
             ))}
           </tbody>

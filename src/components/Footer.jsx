@@ -6,11 +6,11 @@ const Footer = () => {
     <div className="footer">
       <div className="footer-content">
         <div className="footer-header">
-          Si quieres obtener los mejores repuestos para tu moto, no dudes en comprarlos aquí en LapardMotor, tu almacén de confianza.
+          Si quieres obtener los mejores repuestos en calidad y precio para tu moto, no dudes en comprarlos aquí en Full Motos, tu almacén de confianza.
         </div>
         <div className="footer-links">
           <div className="link">
-            <h5>LapardMotor</h5>
+            <h5>Full Motos</h5>
             <p>Nosotros</p>
             <p>Repuestos</p>
             <p>Información</p>

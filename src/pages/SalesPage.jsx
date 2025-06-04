@@ -21,6 +21,8 @@ export const SalesPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [sales, setSales] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredSales, setFilteredSales] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm(); // Crear instancia del formulario
     
@@ -37,22 +39,19 @@ export const SalesPage = () => {
 
     const columns = [
       {
-        title: 'Fecha Creación',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: 'Fecha Venta',
+        dataIndex: 'fecha',
+        key: 'fecha',
         render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
         })
       },
       {
         title: 'Cliente',
         dataIndex: 'clienteNombre',
         key: 'clienteNombre',
-        searchable: true
       },
       {
         title: 'Cantidad de Repuestos',
@@ -66,32 +65,35 @@ export const SalesPage = () => {
         key: 'total',
         render: (total) => `$${total.toLocaleString('es-ES')}`
       },
+      // {
+      //   title: 'Última Actualización',
+      //   dataIndex: 'updatedAt',
+      //   key: 'updateddAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
       {
-        title: 'Última Actualización',
-        dataIndex: 'updatedAt',
-        key: 'updateddAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
-      {
-        title: 'Estado',
-        dataIndex: 'estado',
-        key: 'estado',
-        render: (estado) => (
-            <span style={{ 
-                background: estado === 'Completada' ? 'green' : 'red',
-                padding: '8px',
-                borderRadius: '10px',
-            }}>
-                {estado}
-            </span>
-        ) 
-      },
+      title: 'Estado',
+      dataIndex: 'estado',
+      key: 'estado',
+      render: (estado) => (
+          <span style={{ 
+              background: estado === 'Completada' ?  '#28D4471E' : '#D329291E',
+              color: estado === 'Completada' ?  '#53d447' : '#d32929' ,
+              padding: '8px',
+              borderRadius: '0.25rem',
+              border: '1px solid'
+            
+          }}>
+              {estado}
+          </span>
+      ) 
+    },
     ];
       
     // Función para cargar los datos
@@ -285,6 +287,25 @@ const fetchCategorias = async () => {
       }
   ];
 
+  useEffect(() => {
+          if (!searchTerm) {
+            setFilteredSales(processedSales);
+            return;
+          }
+
+          const filtered = processedSales.filter(sale => { // Cambiar sales por processedSales
+            const searchTermLower = searchTerm.toLowerCase();
+            return (
+              (sale.fecha && new Date(sale.fecha).toLocaleDateString().toLowerCase().includes(searchTermLower)) ||
+              (sale.total && String(sale.total).toLowerCase().includes(searchTermLower)) ||
+              (sale.clienteNombre && sale.clienteNombre && sale.clienteNombre.toLowerCase().includes(searchTermLower)) ||
+              (sale.estado && sale.estado.toLowerCase().includes(searchTermLower))
+              
+            );
+          });
+          setFilteredSales(filtered);
+        }, [searchTerm, sales]);
+
     // Funciones para manejar acciones
     const handleViewSale = (sale) => {
         console.log('Ver detalles de la venta:', sale);
@@ -306,15 +327,14 @@ const fetchCategorias = async () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {sale._id}</Text>
-                            <Text><strong>Fecha de Venta:</strong> {new Date(sale.fecha).toLocaleDateString('es-ES')}</Text>
-                            <Text><strong>Cliente:</strong> {clienteNombre}</Text>
+                            {/* <Text><strong>ID:</strong> {sale._id}</Text> */}
+                            <Text><strong>Fecha y hora de Venta:</strong> {new Date(sale.fecha).toLocaleDateString('es-ES', { day: '2-digit',month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})}</Text>
                             <Text><strong>Fecha Creación:</strong> {new Date(sale.createdAt).toLocaleString('es-ES')}</Text>
                             {sale.updatedAt && (
                               <Text><strong>Última Actualización:</strong> {new Date(sale.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
+                            <Text><strong>Cliente:</strong> {clienteNombre}</Text>
                             <Text><strong>Total:</strong> ${sale.total.toLocaleString('es-ES')}</Text>
                         </div>
                     </div>
@@ -488,21 +508,21 @@ const fetchCategorias = async () => {
             />
             
             <Content>
-              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <SearchBar placeholder="Buscar venta..."/>
+              <div className='container-items'>
+                <div>
+                  <SearchBar placeholder="Buscar venta..." onSearch={setSearchTerm}/>
                 </div>
                   <Button 
                     type="default" 
                     icon={<FilePdfOutlined />} 
                     onClick={handleExportToPDF}
-                    style={{marginLeft: '10px'}}
+                    className='pdf-boton'
                   >PDF
                   </Button>
                   <Button 
                   icon={<FileExcelOutlined />} 
                   onClick={handleExportToExcel}
-                  style={{marginLeft: '10px'}}
+                  className='excel-boton'
                   >Excel
                   </Button>
                   <Button 
@@ -514,7 +534,7 @@ const fetchCategorias = async () => {
                       setSelectedSale(null);
                       setModalVisible(true);
                     }}
-                    style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                    className='icon-create'
                   >
                     Crear Venta
                   </Button>
@@ -522,7 +542,7 @@ const fetchCategorias = async () => {
               
               <DataTable 
                 columns={columns}
-                dataSource={processedSales}
+                dataSource={searchTerm ? filteredSales : processedSales}
                 loading={loading}
                 fetchData={fetchSales}
                 onView={handleViewSale}

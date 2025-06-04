@@ -25,7 +25,7 @@ const ModalForm = ({
           type="primary" 
           loading={confirmLoading} 
           onClick={onOk}
-          style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+          className="custom-submit-btn" // Agrega esta clase
         >
           Guardar
         </Button>,

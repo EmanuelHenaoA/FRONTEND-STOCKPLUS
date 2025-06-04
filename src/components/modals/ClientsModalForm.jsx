@@ -59,7 +59,7 @@ const ClientsModalForm = ({
           type="primary" 
           loading={confirmLoading} 
           onClick={() => form.submit()}
-          style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+          className="custom-submit-btn" // Agrega esta clase
         >
           {mode === 'add' ? 'Crear' : 'Actualizar'}
         </Button>
@@ -80,6 +80,18 @@ const ClientsModalForm = ({
         >
           <Input placeholder="Nombre del cliente" />
         </Form.Item>
+
+              <Form.Item
+                  name="documento"
+                  label="Documento"
+                  rules={[
+                    { required: true, message: "Por favor ingresa un documento válido" },
+                    { pattern: /^[0-9]{8,10}$/, message: "El documento debe tener entre 8 y 10 dígitos" } // Validación con expresión regular
+                  ]}
+                  validateTrigger="onBlur"
+                  >
+                  <Input placeholder="Número de documento" />
+              </Form.Item>
         
         <Form.Item
             name="telefono"

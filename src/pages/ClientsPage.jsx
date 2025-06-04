@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Layout, message, Modal, Button, Form, Typography } from 'antd';
 import { HeaderComponent } from "../components/HeaderComponent";
 import { Logo } from '../components/Logo';
@@ -18,6 +18,8 @@ export const ClientsPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [clientes, setClientes] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredClients, setFilteredClients] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm();
     
@@ -32,7 +34,11 @@ export const ClientsPage = () => {
         title: 'Nombre',
         dataIndex: 'nombre',
         key: 'nombre',
-        searchable: true
+      },
+           {
+        title: 'Documento',
+        dataIndex: 'documento',
+        key: 'documento',
       },
       {
         title: 'Teléfono',
@@ -43,32 +49,31 @@ export const ClientsPage = () => {
         title: 'Email',
         dataIndex: 'email',
         key: 'email',
-        searchable: true
       },
-      {
-        title: 'Fecha Creación',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
-      {
-        title: 'Última Actualización',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      },
+      // {
+      //   title: 'Fecha Creación',
+      //   dataIndex: 'createdAt',
+      //   key: 'createdAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
+      // {
+      //   title: 'Última Actualización',
+      //   dataIndex: 'updatedAt',
+      //   key: 'updatedAt',
+      //   render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //     year: 'numeric',
+      //     hour: '2-digit',
+      //     minute: '2-digit'
+      //   })
+      // },
     ];
       
     // Función para cargar los datos
@@ -114,6 +119,25 @@ export const ClientsPage = () => {
       console.log("Clientes actualizado:", clientes);
     }, [clientes]);
 
+    useEffect(() => {
+          if (!searchTerm) {
+            setFilteredClients(processedClientes);
+            return;
+          }
+
+          const filtered = processedClientes.filter(cliente => { // Cambiar sales por processedSales
+            const searchTermLower = searchTerm.toLowerCase();
+            return (
+              (cliente.telefono && String(cliente.telefono).toLowerCase().includes(searchTermLower)) ||
+              (cliente.email && cliente.email.toLowerCase().includes(searchTermLower)) ||
+              (cliente.clienteNombre && cliente.clienteNombre && cliente.clienteNombre.toLowerCase().includes(searchTermLower)) ||
+              (cliente.estado && cliente.estado.toLowerCase().includes(searchTermLower))
+              
+            );
+          });
+          setFilteredClients(filtered);
+        }, [searchTerm, clientes]);
+
     // Funciones para manejar acciones
     const handleViewCliente = (cliente) => {
         console.log('Ver detalles del cliente:', cliente);
@@ -124,16 +148,15 @@ export const ClientsPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {cliente._id}</Text>
-                            <Text><strong>Nombre:</strong> {cliente.nombre}</Text>
-                            <Text><strong>Teléfono:</strong> {cliente.telefono}</Text>
-                            <Text><strong>Email:</strong> {cliente.email}</Text>
+                            {/* <Text><strong>ID:</strong> {cliente._id}</Text> */}
                             <Text><strong>Fecha Creación:</strong> {new Date(cliente.createdAt).toLocaleString('es-ES')}</Text>
                             {cliente.updatedAt && (
                                 <Text><strong>Última Actualización:</strong> {new Date(cliente.updatedAt).toLocaleString('es-ES')}</Text>
                             )}
+                            <Text><strong>Nombre:</strong> {cliente.nombre}</Text>
+                            <Text><strong>Teléfono:</strong> {cliente.telefono}</Text>
+                            <Text><strong>Email:</strong> {cliente.email}</Text>
                         </div>
                     </div>
                 </div>
@@ -235,20 +258,20 @@ export const ClientsPage = () => {
             />
             
             <Content>
-              <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <SearchBar placeholder="Buscar cliente..."/>
+              <div className='container-items'>
+                <div>
+                  <SearchBar placeholder="Buscar cliente..." onSearch={setSearchTerm}/>
                 </div>
                 <Button 
                   type="primary" 
-                  icon={<PlusOutlined />} 
+                  icon={<UserAddOutlined/>} 
                   onClick={() => {
                     form.resetFields(); // Resetear el formulario antes de abrir el modal
                     setModalMode('add');
                     setSelectedCliente(null);
                     setModalVisible(true);
                   }}
-                  style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                  className='icon-create'
                 >
                   Crear Cliente
                 </Button>
@@ -256,7 +279,7 @@ export const ClientsPage = () => {
               
               <DataTable 
                 columns={columns}
-                dataSource={processedClientes}
+                dataSource={searchTerm ? filteredClients : processedClientes}
                 loading={loading}
                 fetchData={fetchClientes}
                 onView={handleViewCliente}

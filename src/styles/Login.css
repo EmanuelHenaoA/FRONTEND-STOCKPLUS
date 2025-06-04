@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: #0c0101;
+  background: #101014;
   background-size: 87rem;
   background-position: center;
 }
@@ -16,7 +16,7 @@
   height: 120px;
   left: 55%;
   top: 20%;
-  background-color: #f04c2f;
+  background-color: #2ff08f;
   filter: blur(90px);
 }
 
@@ -24,7 +24,7 @@
 .wrapper{
   width: 420px;
   background: transparent;
-  border: 3px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(25px);
   box-shadow: 0 0 10px rgba(0, 0, 0, .2); 
   color: #fff;
@@ -42,7 +42,8 @@
 }
 
 .wrapper .logo{
-  background: linear-gradient(95deg, #da1a0c 3.2%, #ffffff 99.5%);
+  justify-content: center;
+  background: linear-gradient(95deg, #1f3628 3.2%, #67e7a7 99.5%);
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
@@ -56,6 +57,7 @@
 .wrapper h1{
   font-size: 27px;
   text-align: center;
+  
 }
 
 
@@ -73,7 +75,7 @@
   border: none;
   outline: none;
   border: 2px solid rgba(255, 255, 255, .2);
-  border-radius: 40px;
+  border-radius: 10px;
   font-size: 17px;
   color: #fff;
   padding: 20px 45px 20px 20px;
@@ -92,25 +94,8 @@
   font-size: 17px;
 }
 
-.wrapper .remember-forgot {
-  display: flex;
-  justify-content: space-between;
-  font-size: 15px;
-  margin: 20px 0 20px;
-}
 
-.remember-forgot label input {
-  accent-color: #fff;
-  margin-right: 4px;
-}
-
-.remember-forgot a {
-  color: #fff;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.remember-forgot a:hover {
+.register-link a:hover {
   text-decoration: underline;
   color: #3b82f6;
 }
@@ -118,10 +103,10 @@
 .wrapper button {
   width: 100%;
   height: 45px;
-  background: linear-gradient(95deg, #d40e0e 3.2%, #f6763b 99.5%);
+  background: linear-gradient(95deg, #18432f 3.2%, #32794d 99.5%);
   border: none;
   outline: none;
-  border-radius: 40px;
+  border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .1);
   cursor: pointer;
   font-size: 17px;
@@ -148,14 +133,10 @@
    color: #3b82f6;
 }
 
-.input-box.error input {
-  border: 2px solid rgb(230, 20, 20) !important; /* Resaltar el input con borde rojo */
-}
 
-.error-msg {
-  position: absolute;
-  color: rgb(252, 248, 248);
-  font-size: 14px;
+
+.field-error-msg {
+  color: #d32929;
 }
 
 .password-requirements {

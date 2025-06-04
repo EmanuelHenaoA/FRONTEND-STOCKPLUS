@@ -10,10 +10,10 @@
 }
 
 .main{
-    padding: 0 88px;
+    padding: 0 77px;
     position: relative;
     overflow-x: hidden;
-    background-color: #0c0101;
+    background-color: #101014;
 }
 
 .main::before{
@@ -23,7 +23,7 @@
     height: 120px;
     left: 55%;
     top: 20%;
-    background-color: #f04c2f;
+    background-color: #2ff08f;
     filter: blur(90px);
 }
 
@@ -34,21 +34,36 @@
     height: 120px;
     left: 80%;
     top: 44%;
-    background-color: #cacd22;
+    background-color: #52cd22;
     filter: blur(90px);
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: rgba(16, 16, 20, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 77px;
+    transition: all 0.3s ease;
+}
+
+/* Ajuste para el contenido principal */
+.main {
+    padding-top: 80px; /* Ajusta según la altura de tu navbar */
 }
 
 .main .navbar{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 0;
 }
 
 .navbar .toggler{
     font-size: 2rem;
-    color: #c5c3c3;
-    background-color: transparent;
+    color: #ebebeb;
     cursor: pointer;
     border: none;
     display: none;
@@ -56,25 +71,35 @@
 
 .navbar .nav-btn{
     cursor: pointer;
-    background-color: transparent;
     border: none;
+    font-weight: 500;
     width: 120px;
-    height: 40px;
-    color: #ccc;
+    height: 36px;
+    color: #ebebeb;
     font-size: 12px;
+    background-color: var(--lightgreen);
+    border-radius: 8px;
+    margin: 10px;
 }
 
 .navbar .nav-btn.selected{
-    border: 1px solid #ccc;
+    background-color: #303034;
     border-radius: 8px;
 }
 
+.nav-btn:hover {
+    background-color: var(--green);
+}
+
+.nav-btn.selected:hover {
+    background-color: #403f44;
+}
+
 .navbar .logo{
-    background: linear-gradient(95deg,  #da1a0c 3.2%, #ffffff 99.5%);
+    background: linear-gradient(95deg,  rgb(16, 78, 44) 3.2%, #5bce94 99.5%);
     background-clip: text;
-    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-weight: 700;
+    font-weight: 690;
     font-size: 38px;
 }
 
@@ -84,12 +109,18 @@
     cursor: pointer;
 }
 
+.item:hover {
+    color: white;
+}
+
+
+
 .navbar .item.selected{
-    background: linear-gradient(95deg, #ce2222 3.2%, #f6763b 99.5%);
+    background: linear-gradient(95deg, #265039 3.2%, #55dd9e 99.5%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    border-bottom: 1px solid #ce36228c;
+    border-bottom: 1px solid #22ce6f8c;
 }
 
 .navbar .item:not(:last-child){
@@ -99,6 +130,117 @@
 .navbar .nav-buttons.active{
     transition: all 0.3s ease;
     opacity: 1;
+}
+
+.catalogo {
+    margin-top: 4rem;
+}
+
+.catalogo p {
+    margin: 0;
+    color: #fff;
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 55px;
+    display: flex;
+    justify-content: center;
+}
+
+.marca-info {
+    margin-top: 1rem;
+    position: static;
+    margin-top: 20px;
+}
+
+.marca-titulo {
+    color: #ebebeb;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    background: linear-gradient(95deg, #265039 3.2%, #55dd9e 99.5%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    justify-content: center;
+}
+
+.marca-descripcion {
+    color: #ccc;
+}
+
+
+.marcas-catalogo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3rem;
+    gap: 2rem;
+}
+
+.marca-item {
+    position: relative;
+    flex: 1;
+    /* max-width: 300px; */
+    border-radius: 1rem;
+    /* background: rgba(255, 255, 255, 0.1); */
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.marca-img:hover {
+    transform: translateY(-5px);
+    border-color: var(--lightgreen);
+    box-shadow: 0 10px 30px rgba(47, 240, 143, 0.2);
+}
+
+.marca-img {
+    width: 100%;
+    height: 340px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    border: 3px solid rgba(255, 255, 255);
+    padding: 13px; 
+}
+
+.marca-item:hover .marca-img {
+    transform: scale(1.05);
+}
+
+.marca-btn {
+    position: absolute;
+    left: 270px;
+    top: 270px;
+    padding: 8px 16px;
+    background: linear-gradient(95deg, #06492a 3.2%, #265039 99.5%);
+    color: #ebebeb;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+}
+
+
+.marca-btn:hover {
+    background: linear-gradient(95deg, #28b870 3.2%, var(--lightgreen) 99.5%);
+    transform: scale(1.05);
+    opacity: 1;
+}
+/* Responsive */
+@media screen and (max-width: 925px) {
+    .marcas-catalogo {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .marca-item {
+        max-width: 100%;
+        width: 100%;
+    }
 }
 
 .main .top-container{
@@ -123,7 +265,7 @@
 
 .top-container .info-text{
     margin: 20px 0 32px;
-    color: #fff;
+    color: #ebebeb;
     font-size: 16px;
     line-height: 20px;
     letter-spacing: 0.5px;
@@ -136,11 +278,11 @@
 .top-container .info-btn{
     cursor: pointer;
     padding: 8px 38px;
-    border-radius: 16px;
+    border-radius: 11px;
     font-weight: 500;
     font-size: 15px;
     letter-spacing: -1px;
-    color: #fff;
+    color: #ebebeb;
 }
 
 .top-container .info-btn.nav-btn{
@@ -151,14 +293,14 @@
 
 .top-container .info-btn.selected{
     border: none;
-    background: linear-gradient(95deg, #d40e0e 3.2%, #f6763b 99.5%);
+    background: linear-gradient(95deg, #06492a  3.2%, #265039  99.5%);
 }
 
 .top-container .nft-box{
     padding: 16px;
-    border: 5px solid #ffffff;
+    border: 5px solid #ebebeb;
     background: linear-gradient(170deg, rgba(52, 93, 129, 0.08) 1.85%, rgba(57, 46, 75, 0.08) 98%);
-    border-radius: 2rem;
+    border-radius: 1rem;
     animation: toLeft 0.8s;
 }
 
@@ -166,7 +308,7 @@
     object-fit: cover;
     width: 500px;
     height: 500px;
-    border-radius: 1.6rem;
+    border-radius: 10px;
 }
 
 .top-container .nft-box .nft-content{
@@ -189,7 +331,7 @@
     flex-shrink: 0;
     width: 30px;
     height: 30px;
-    border-radius: 50%;
+    border-radius: 20%;
     margin-right: 10px;
 }
 
@@ -243,7 +385,7 @@
     width: 100%;
     height: 120px;
     top: 80px;
-    background: linear-gradient(95deg, #ce5322 3.2%, #e3f63b 99.5%);
+    background: linear-gradient(95deg, #6fce22 3.2%, #e3f63b 99.5%);
     filter: blur(140px);
 }
 

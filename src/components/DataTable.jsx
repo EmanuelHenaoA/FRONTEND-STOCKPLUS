@@ -1,7 +1,7 @@
 // DataTable.jsx
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Space, Tooltip } from 'antd';
-import { SearchOutlined, ReloadOutlined, EyeOutlined, EditOutlined, DeleteOutlined, SyncOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditFilled, EyeFilled, EditOutlined, DeleteOutlined, SyncOutlined, DeleteFilled, EyeOutlined } from '@ant-design/icons';
 import '../styles/DataTable.css';
 
 const DataTable = ({ 
@@ -158,12 +158,20 @@ const DataTable = ({
                 </Tooltip>
               )}
               {showToggleStatus && onToggleStatus && (
-                <Tooltip title={record.estado === 'Activo' ? 'Desactivar' : 'Activar'}>
+                <Tooltip title={(() => {
+                    switch(record.estado) {
+                      case 'Activo': return 'Desactivar';
+                      case 'Completada': return 'Cancelar';
+                      case 'Cancelada' : return 'Completar';
+                      case 'Inactivo': return 'Activar';
+                      default: return 'Acción';
+                    }
+                  })()}>
                   <Button 
                     icon={<SyncOutlined spin={toggleStatusLoading && toggleStatusIdLoading === record._id} />} 
                     onClick={() => onToggleStatus(record)} 
                     type="text" 
-                    className={`action-button ${record.estado === 'Activo' ? 'status-active-button' : 'status-inactive-button'}`}
+                    className={`action-button ${record.estado === 'Activo' || record.estado === 'Completada' ? 'status-active-button' : 'status-inactive-button'}`}
                   />
                 </Tooltip>
               )}

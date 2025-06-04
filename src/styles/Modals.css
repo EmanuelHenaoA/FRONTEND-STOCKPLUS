@@ -1,0 +1,117 @@
+/* Estilos globales para todos los modales */
+.ant-modal-content {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.ant-modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px 12px 0 0;
+  border: none;
+  padding: 20px 24px;
+}
+
+.ant-modal-title {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ant-modal-close {
+  color: white;
+  font-size: 16px;
+}
+
+.ant-modal-close:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ant-modal-body {
+  padding: 24px;
+}
+
+.ant-modal-footer {
+  border-top: 1px solid #e8e8e8;
+  padding: 16px 24px;
+  background-color: #fafafa;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Estilos para formularios dentro de modales */
+.ant-modal .ant-form-item-label > label {
+  font-weight: 600;
+  color: #333;
+}
+
+.ant-modal .ant-input {
+  border-radius: 8px;
+  border: 2px solid #e8e8e8;
+  transition: all 0.3s ease;
+}
+
+.ant-modal .ant-input:focus,
+.ant-modal .ant-input:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.ant-modal .ant-select-selector {
+  border: 2px solid #e8e8e8 !important;
+  border-radius: 8px !important;
+}
+
+.custom-submit-btn {
+  background-color: var(--green);
+}
+
+.custom-submit-btn:hover {
+  background-color: var(--lightgreen) !important;
+}
+
+
+/* Estilos para Modal.info */
+.ant-modal-confirm .ant-modal-content {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+
+
+.ant-modal-confirm .ant-modal-body {
+  padding: 24px;
+  background-color: #fafafa;
+}
+
+/* Estilos específicos para botones de Modal.confirm */
+.ant-modal-confirm .ant-btn-primary {
+  background-color: var(--green) !important;
+}
+
+.ant-modal-confirm .ant-btn-primary:hover {
+  background-color: #18432f  !important;
+  border-color: #18432f  !important;
+}
+
+
+/* Para modal de confirmación específicamente */
+.ant-modal-confirm-confirm .ant-btn-primary {
+  background-color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+/* Para modal de info específicamente */
+.ant-modal-confirm-info .ant-btn-primary {
+  background-color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+
+/* Estilos para el footer */
+.ant-modal-confirm .ant-modal-confirm-btns {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.ant-modal-confirm .ant-modal-confirm-btns .ant-btn {
+  margin-left: 8px;
+  min-width: 80px;
+}

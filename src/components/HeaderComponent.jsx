@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Layout, Avatar, Badge, Dropdown, notification, Spin, Flex } from "antd";
+import { Button, Layout, Avatar, Badge, Dropdown, notification, Spin, Flex, Modal } from "antd";
 import { 
   MenuOutlined, 
   UserOutlined, 
@@ -18,8 +18,7 @@ import { getCurrentUser, cerrarSesion } from "../services/authService";
 import { dashboardService } from "../services/dashboardService";
 import { useNavigate } from "react-router-dom";
 
-
-export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
+export const HeaderComponent = ({ collapsed, setCollapsed, title, isReadOnlyMode = false }) => {
   const navigate = useNavigate();
   
   // Estado para el usuario y notificaciones
@@ -36,18 +35,18 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
     const user = getCurrentUser();
     console.log("Estructura del usuario:", user); 
     if (user) {
-      console.log("Usuario cargado:", user); // Para depuración
+      console.log("Usuario cargado:", user);
       setCurrentUser(user);
     }
 
-    // Modificar en la función fetchRepuestosStockBajo:
+    // Solo cargar notificaciones si NO es modo solo lectura
+    if (!isReadOnlyMode) {
       const fetchRepuestosStockBajo = async () => {
         try {
           setLoading(true);
           const response = await dashboardService.getRepuestosStockBajo();
-          console.log("Repuestos con stock bajo:", response); // Para depuración
+          console.log("Repuestos con stock bajo:", response);
           
-          // Extraer los datos del campo 'data' si existe
           const stockData = response.data || response;
           setRepuestosStockBajo(Array.isArray(stockData) ? stockData : []);
         } catch (error) {
@@ -63,62 +62,66 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
       };
       
       fetchRepuestosStockBajo();
-    
-
-    
-    // Recargar datos cada 2 minutos para mayor frecuencia
-    const interval = setInterval(fetchRepuestosStockBajo, 1 * 60 * 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
+      
+      // Recargar datos cada 2 minutos para mayor frecuencia
+      const interval = setInterval(fetchRepuestosStockBajo, 1 * 60 * 1000);
+      
+      return () => clearInterval(interval);
+    } else {
+      setLoading(false);
+    }
+  }, [isReadOnlyMode]);
 
   // Manejar cierre de sesión
   const handleLogout = () => {
-    cerrarSesion();
-    navigate("/login");
+    Modal.confirm({
+      title: '¿Estás seguro de cerrar sesión?',
+      content: 'Se cerrará tu sesión actual en el sistema.',
+      okText: 'Si, cerrar sesión',
+      cancelText: 'No, cancelar',
+      onOk() {
+        cerrarSesion();
+        navigate('/login');
+      },
+    });
   };
 
   // Contenido detallado del perfil de usuario
   const userProfileContent = () => (
-    <div style={{ width: 280, padding: "12px 0", background: '#232529', borderRadius: '8px', border: '2px solid white' }}>
-      <div style={{ textAlign: "center", marginBottom: "12px", color: 'white'}}>
+    <div style={{ width: 280, padding: "12px 0", background: '#ebebeb', borderRadius: '8px', border: '2px solid #284734' }}>
+      <div style={{ textAlign: "center", marginBottom: "12px"}}>
         <Avatar 
           size={64} 
           icon={<UserOutlined />} 
-          style={{ backgroundColor: "#d32929"}} 
-          />
+          style={{ backgroundColor: "#18432f"}} 
+        />
         <div style={{ fontWeight: "bold", fontSize: "16px", marginTop: "8px" }}>
           {currentUser?.nombre || 'Usuario'}
         </div>
       </div>
       
       <div style={{ padding: "0 16px" }}>
-        <div style={{ margin: "8px 0", display: "flex", alignItems: "center", color: 'white' }}>
-          <MailOutlined style={{ marginRight: "8px", color: "#d32929" }} />
+        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
+          <MailOutlined style={{ marginRight: "8px", color: "#18432f" }} />
           <span>{currentUser?.email || 'No disponible'}</span>
         </div>
         
-        <div style={{ margin: "8px 0", display: "flex", alignItems: "center", color: 'white' }}>
-          <IdcardOutlined style={{ marginRight: "8px", color: "#d32929" }} />
+        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
+          <IdcardOutlined style={{ marginRight: "8px", color: "#18432f" }} />
           <span>Documento: {currentUser?.documento || 'No disponible'}</span>
         </div>
         
-        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" , color: 'white'}}>
-          <PhoneOutlined style={{ marginRight: "8px", color: "#d32929" }} />
+        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
+          <PhoneOutlined style={{ marginRight: "8px", color: "#18432f" }} />
           <span>Teléfono: {currentUser?.telefono || 'No disponible'}</span>
         </div>
 
-        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" , color: 'white'}}>
-          <IdcardOutlined style={{ marginRight: "8px", color: "#d32929" }} />
-          <span>Direccion: {currentUser?.direccion || 'No disponible'}</span>
+        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
+          <IdcardOutlined style={{ marginRight: "8px", color: "#18432f" }} />
+          <span>Dirección: {currentUser?.direccion || 'No disponible'}</span>
         </div>
         
-        {/* <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
-          <UserOutlined style={{ marginRight: "8px", color: "#d32929" }} />
-          <span>Rol: {currentUser?.rol.nombre || 'No disponible'}</span>
-        </div> */}
-        
-        <div style={{ margin: "8px 0", display: "flex", alignItems: "center", color: 'white' }}>
+        <div style={{ margin: "8px 0", display: "flex", alignItems: "center" }}>
           <span style={{ 
             display: "inline-block", 
             width: "8px", 
@@ -132,43 +135,21 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
       </div>
       
       <div style={{ borderTop: "1px solid #f0f0f0", marginTop: "12px", paddingTop: "12px" }}>
-        {/* <div 
-          style={{ 
-            padding: "8px 16px", 
-            cursor: "pointer", 
-            display: "flex", 
-            alignItems: "center" 
-          }}
-          onClick={() => {
-            setUserMenuOpen(false);
-            navigate("/forgot-password");
-          }}
-        >
-          <LockOutlined style={{ marginRight: "8px" }} />
-          <span>Cambiar Contraseña</span>
-        </div> */}
-        
         <div 
-          style={{ 
-            padding: "8px 16px", 
-            cursor: "pointer", 
-            display: "flex", 
-            alignItems: "center",
-            color: "#ff4d4f"
-          }}
           onClick={handleLogout}
+          className="logout-profile"
         >
-          <LogoutOutlined style={{ marginRight: "8px" }} />
+          <LogoutOutlined style={{marginRight: '8px'}}/>
           <span>Cerrar sesión</span>
         </div>
       </div>
     </div>
   );
 
-  // Función para generar el contenido de las notificaciones
+  // Función para generar el contenido de las notificaciones (solo si NO es modo solo lectura)
   const getNotificationContent = () => (
-    <div style={{ width: 300, maxHeight: 400, overflow: 'auto', background: '#232529', borderRadius: '8px', border: '2px solid white'}}>
-      <div style={{ padding: '12px 16px', fontWeight: 'bold', borderBottom: '1px solid #f0f0f0', color: 'white' }}>
+    <div style={{ width: 300, maxHeight: 400, overflow: 'auto', background: '#ebebeb', borderRadius: '8px', border: '2px solid #284734'}}>
+      <div style={{ padding: '12px 16px', fontWeight: 'bold', borderBottom: '1px solid #284734' }}>
         Repuestos con Stock Bajo
       </div>
       {loading ? (
@@ -177,12 +158,12 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
         </div>
       ) : repuestosStockBajo && repuestosStockBajo.length > 0 ? (
         repuestosStockBajo.map((item, index) => (
-          <div key={item.id || index} style={{ padding: '12px 16px', borderBottom: '1px solid #f0f0f0' }}>
+          <div key={item.id || index} style={{ padding: '12px 16px'}}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <WarningOutlined style={{ color: '#faad14', marginRight: 8 }} />
               <div>
-                <div style={{ fontWeight: 'bold' , color: 'white' }}>{item.nombre || item.name || `Repuesto ${index + 1}`}</div>
-                <div style={{ color: 'white', fontSize: '12px' }}>
+                <div style={{ fontWeight: 'bold'}}>{item.nombre || item.name || `Repuesto ${index + 1}`}</div>
+                <div style={{ fontSize: '12px' }}>
                   Stock actual: <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>
                     {item.stock || item.existencias || 0}
                   </span> / Ir a comprar <ArrowRightOutlined style={{cursor: 'pointer', color: 'green'}} onClick={() => navigate('/compras')}/>
@@ -208,39 +189,45 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
           onClick={() => setCollapsed(!collapsed)}
           icon={<MenuOutlined />}
         />
-          <h1 className="header-title">{title}</h1>
+        <h1 className="header-title">{title}</h1>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Dropdown 
-          dropdownRender={() => getNotificationContent()}
-          trigger={['click']}
-          open={notificationsOpen}
-          onOpenChange={setNotificationsOpen}
-          placement="bottomRight"
-        >
-          <Badge 
-            count={repuestosStockBajo?.length || 0} 
-            size="small" 
-            offset={[-7, 5]}
-            style={{ backgroundColor: repuestosStockBajo?.length > 0 ? '#ff4d4f' : '##2a2c30' }}
-          >
+        {/* Solo mostrar notificaciones y ayuda si NO es modo solo lectura */}
+        {!isReadOnlyMode && (
+          <>
+            <Dropdown 
+              dropdownRender={() => getNotificationContent()}
+              trigger={['click']}
+              open={notificationsOpen}
+              onOpenChange={setNotificationsOpen}
+              placement="bottomRight"
+            >
+              <Badge 
+                count={repuestosStockBajo?.length || 0} 
+                size="small" 
+                offset={[-10, 10]}
+                style={{ backgroundColor: repuestosStockBajo?.length > 0 ? '#284734' : '#888888' }}
+              >
+                <Avatar 
+                  className="profile-icon" 
+                  icon={<BellOutlined />} 
+                  style={{ 
+                    cursor: 'pointer', 
+                    background: repuestosStockBajo?.length > 0 ? '#284734' : (notificationsOpen ? '#888888' : '#284734') 
+                  }} 
+                />
+              </Badge>
+            </Dropdown>
+            
             <Avatar 
               className="profile-icon" 
-              icon={<BellOutlined />} 
-              style={{ 
-                cursor: 'pointer', 
-                background: repuestosStockBajo?.length > 0 ? '#ff4d4f' : (notificationsOpen ? '#ff4d4f' : '#2a2c30') 
-              }} 
+              icon={<QuestionOutlined />} 
+              onClick={() => navigate("/")}
             />
-          </Badge>
-        </Dropdown>
+          </>
+        )}
         
-        <Avatar 
-          className="profile-icon" 
-          icon={<QuestionOutlined />} 
-          onClick={() => navigate("/ayuda")}
-        />
-        
+        {/* El perfil de usuario siempre se muestra */}
         <Dropdown 
           dropdownRender={userProfileContent}
           trigger={['click']}
@@ -251,7 +238,7 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title }) => {
           <Avatar 
             className="profile-icon" 
             icon={<UserOutlined />} 
-            style={{ background: (userMenuOpen? '#ff4d4f' : '#2a2c30')}}
+            style={{ background: (userMenuOpen? '#888888' : "#284734")}}
           />
         </Dropdown>
       </div>

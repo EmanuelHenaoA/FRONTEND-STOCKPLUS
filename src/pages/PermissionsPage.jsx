@@ -18,6 +18,8 @@ export const PermissionsPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [permisos, setPermisos] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredPermisos, setFilteredPermisos] = useState([]);
     const navigate = useNavigate();
     const [form] = Form.useForm();
     const { Title, Text } = Typography;
@@ -78,6 +80,24 @@ export const PermissionsPage = () => {
         fetchPermisos();
     }, []);
 
+    useEffect(() => {
+                if (!searchTerm) {
+                  setFilteredPermisos(permisos);
+                  return;
+                }
+                
+                const filtered = permisos.filter(permiso => {
+                  const searchTermLower = searchTerm.toLowerCase();
+                  return (
+                    (permiso.nombre && permiso.nombre.toLowerCase().includes(searchTermLower))
+                  );
+                });
+                
+                setFilteredPermisos(filtered);
+              }, [searchTerm, permisos]);
+        
+    
+
     // Funciones para manejar acciones
     const handleViewPermiso = (permiso) => {
         console.log('Ver detalles del permiso:', permiso);
@@ -88,9 +108,8 @@ export const PermissionsPage = () => {
             content: (
                 <div style={{ maxHeight: '70vh', overflow: 'auto' }}>
                     <div style={{ marginBottom: '20px' }}>
-                        <Title level={5}>Información General</Title>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            <Text><strong>ID:</strong> {permiso._id}</Text>
+                            {/* <Text><strong>ID:</strong> {permiso._id}</Text> */}
                             <Text><strong>Nombre:</strong> {permiso.nombre}</Text>
                             <Text><strong>Fecha Creación:</strong> {new Date(permiso.createdAt).toLocaleString('es-ES')}</Text>
                             {permiso.updatedAt && (
@@ -186,11 +205,11 @@ export const PermissionsPage = () => {
                 />
             
                 <Content>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', margin: '35px' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <SearchBar placeholder="Buscar permiso..."/>
+                    <div className='container-items'>
+                        <div>
+                            <SearchBar placeholder="Buscar permiso..." onSearch={setSearchTerm}/>
                         </div>
-                        <Button 
+                        {/* <Button 
                             type="primary" 
                             icon={<PlusOutlined />} 
                             onClick={() => {
@@ -202,12 +221,12 @@ export const PermissionsPage = () => {
                             style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
                         >
                             Crear Permiso
-                        </Button>
+                        </Button> */}
                     </div>
-              
+                    
                     <DataTable 
                         columns={columns}
-                        dataSource={permisos}
+                        dataSource={filteredPermisos}
                         loading={loading}
                         fetchData={fetchPermisos}
                         onView={handleViewPermiso}

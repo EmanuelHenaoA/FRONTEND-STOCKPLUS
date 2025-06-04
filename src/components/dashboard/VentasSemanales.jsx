@@ -45,7 +45,7 @@ const VentasSemanales = () => {
               {
                 label: 'Ventas Semanales',
                 data: data.map(item => item.total),
-                backgroundColor: 'green',
+                backgroundColor: '#feb95a',
               }
             ]
           });
@@ -80,6 +80,7 @@ const VentasSemanales = () => {
 
   return (
     <div className="chart-container">
+      <h2>Semanales</h2>
       <Bar options={options} data={chartData} />
     </div>
   );

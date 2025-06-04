@@ -151,7 +151,7 @@ const VentasMensuales = () => {
 
   return (
     <div className="chart-container">
-      <h3>Ventas por Mes</h3>
+      <h2>Mensuales</h2>
       <Line options={options} data={chartData} />
     </div>
   );

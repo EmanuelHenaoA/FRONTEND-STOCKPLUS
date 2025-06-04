@@ -49,7 +49,7 @@ const BrandsModalForm = ({
           type="primary" 
           loading={confirmLoading} 
           onClick={() => form.submit()}
-          style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+          className="custom-submit-btn" // Agrega esta clase
         >
           {mode === 'add' ? 'Crear' : 'Actualizar'}
         </Button>

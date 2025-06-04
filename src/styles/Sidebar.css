@@ -5,13 +5,35 @@
 background-color: #181a1e;
 background: #110f0f; */
 
+:root {
+    --light: #fafafa;
+    --lightmain: #f2f3f5;
+    --words: #6b7385;
+    --green: #284734;
+    --lightgreen: #18432f;
+
+}
+
+.logout-profile {
+    padding: 8px 16px;
+    cursor: pointer; 
+    display: flex; 
+    align-items: center;
+    color: #1e2025;
+}
+
+.logout-profile:hover {
+    color: #aa2025;
+    background-color: #ece5dd;
+}
 
 * {
     font-family: 'Montserrat';
 }
 
+
 .sidebar {
-    background: #110f0f !important;
+    background: var(--light);
     position: fixed;
     top: 0;
     left: 0;
@@ -22,21 +44,27 @@ background: #110f0f; */
 } 
 
 
-
 .logo {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color:  #d32929;
+    /* margin-left: 12px; */
+    color: #15743c;
     padding: 9px;
     font-size: 1.7rem;
-    margin-top: 15px;
+    margin-top: 10px;
+}
+
+.logo-img {
+    display: flex;
+    margin-left: 9px;
+    color: #15743c;
+    padding: 9px;
+    font-size: 1.7rem;
+    margin-top: 10px;
 }
 
 
 .logo-icon {
-    margin-left: 5px;
-    background: linear-gradient(95deg, #da1a0c 3.2%, #ffffff 99.5%);
+    background: linear-gradient(95deg, #284734  3.2%, #15743c 99.5%);
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 700;
@@ -44,84 +72,116 @@ background: #110f0f; */
     cursor: default;
 }
 
-.logout-icon {
-    color:  #d32929 !important; /* Forzar el color */
-}
 
 .header {
-    background-color: #110f0f;
+    background: var(--light);
     position: sticky;
-    left: 16px;
-    top: 4px;
     transition: left 0.3s ease-in-out, width 0.3s ease-in-out;
     padding: 33px;
     display: flex;
     width: 100%;
-    border-radius: 40px;
     justify-content: space-between;
 }
 
 
 .header-icon {
     color: #fff;
-    background:   #d32929;
+    background:   #284734;
     font-size: 15px;
     padding: 15px;
     border-radius: 5px;
 }
 
 .header-title {
-    color: white;
     font-size: 24px;
     font-weight: bold;
     cursor: default;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    
 }
 
 .profile-icon {
+    color: white;
+    background-color: #284734;
     cursor: pointer;
-    background: #2a2c30;
     margin: 8px;
-    color: #ffffff;
 }
-  
+
+.profile-icon:hover {
+    background-color: #18432f !important;
+}
+
 
 .menu-bar {
     display: flex;
     flex-direction: column;
-    font-size: 0.95rem;
-    background: #110f0f;
+    background: var(--light);
+    color: var(--words);
     font-weight: 500;
-    width: 36vh;
     height: calc(100vh - 64px); /* 64px si tienes un logo arriba, ajústalo si tu logo tiene otra altura */
 }
 
 .ant-layout {
-  background: #110f0f;
+    background: var(--light);
 }
 
 
 .ant-menu-item-icon {
     font-size: 17px !important;
+    color: var(--words) !important;
+}
+
+.ant-menu-item {
+    color: var(--words) !important;
 }
 
 /* Asegurar que el color se aplique correctamente */
 .ant-menu-sub{
-    background-color: #110f0f !important;
+    color: var(--words) !important;
+    background-color: var(--light) !important;
+    
 }
 
+.menu-subsettings {
+    color: var(--words);
+}
+
+.subsettings-menu .ant-menu-submenu-title {
+    color: var(--words) !important; /* Cambia el color del título del submenú */
+}
+
+
+
 .menu-bar .ant-menu-item-selected {
-    background-color: #d32929; /* Color cuando se selecciona */
+    background-color: #00aaff1d !important; /* Mantiene el fondo */
+}
+
+.menu-bar .ant-menu-item-selected .ant-menu-item-icon {
+    color: #002d18 !important; /* Cambia solo el ícono a rojo */
+    transition: color 0.3s ease-in-out;
+}
+
+.ant-menu-item:hover,
+.ant-menu-item:hover .ant-menu-item-icon {
+    color: var(--lightgreen) !important; /* Aplica color a ambos elementos */
+    transition: color 0.3s ease-in-out; /* Agregar animación */
+}
+
+.ant-menu-item-selected .ant-menu-item-icon {
+    color: var(--words) !important; /* Cambia el color del icono cuando el ítem está seleccionado */
+}
+
+.logout-icon {
+    color: #aa2025 !important; /* Forzar el color */
 }
 
 
 .main-content {
     min-height: 100vh;
-    background: #110f0f;    
+    background: var(--lightmain);
     margin-left: 34vh; /* mismo ancho que el Sider cuando está expandido */
-    transition: margin-left 0.1s;
 }
 
 .main-content.collapsed {
@@ -168,8 +228,29 @@ input, button {
     margin-bottom: 1.5rem;
 }
 
+.container-items {
+    margin: 28px;
+    padding: 20px;
+    background-color: var(--light);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    overflow-x: auto;
+    
+}
+
+.icon-create {
+    background-color: var(--lightgreen);
+    color: var(--light);
+}
+
+.icon-create:hover {
+    background: var(--green) !important;
+}
+
 .sidemenu a {
-    color: #fff;
+    color: var(--words);
     font-size: 1.09rem;
     display: flex;
     align-items: center;
@@ -183,28 +264,27 @@ input, button {
 
 .searchbar span {
     font-size: 1.3rem;
-    color: #fff;
     padding-left: 1.2rem;
 }
 
 
 .searchbar {
     display: flex;
-    width: 450px;
-    border-radius: 40px;
+    width: 380px;
+    border-radius: 10px;
     overflow-x: hidden;
     border: 2px solid #969797;
     align-items: center;
     background: transparent;
+    position: relative;
+
 }
 
 
 .searchbar input {
     background: transparent;
     font-size: 17px;
-    font-weight: bold;
-    padding: 0.8rem;
-    color: white;
+    padding: 0.5rem;
     width: 30rem;
 }
 
@@ -241,7 +321,7 @@ main {
 .card-icon span {
     height: 55px;
     width: 55px;
-    color: #fff;
+    color: var(--words);
     font-size: 2rem;
     border-radius: 6px;
     display: grid;
@@ -261,15 +341,6 @@ main {
     border-radius: 3px;
 }
 
-.chart-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #efefef;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #222;
-    margin-bottom: 1rem;
-}
 
 .close-mobile-menu {
     position: fixed;
