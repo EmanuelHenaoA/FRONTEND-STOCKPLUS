@@ -299,6 +299,31 @@ main {
     margin-top: calc(5px + .5rem);
     padding: 1rem 0rem;
 }
+@media (max-width: 768px) and (min-width: 540px) {
+    .sidebar {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+    }
+    
+    .header {
+        padding: 25px 20px;
+        margin-left: 70px;
+    }
+    
+    .header-title {
+        display: none;
+    }
+    
+    .container-items {
+        margin: 20px;
+        padding: 18px;
+    }
+}
 
 /* Surface Duo y dispositivos similares */
 @media (max-width: 540px) and (min-width: 481px) {
@@ -320,14 +345,12 @@ main {
 
 /* Media queries para responsive */
 @media (max-width: 768px) {
-    .sidebar {
-        display: flex;
-        width: 10px;
+     .sidebar {
+        width: 50px !important;
+        min-width: 50px !important;
+        max-width: 50px !important;
     }
-    
-    .main-content {
-        margin-left: 70px; /* Ajuste para sidebar colapsado */
-    }
+
     
     .header-title {
         display: none; /* Ocultar título en móvil */
@@ -357,7 +380,7 @@ main {
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 70px !important; /* Aún más pequeño en pantallas muy pequeñas */
+        width: 50px !important; /* Aún más pequeño en pantallas muy pequeñas */
         min-width: 50px !important;
         max-width: 50px !important;
     }
