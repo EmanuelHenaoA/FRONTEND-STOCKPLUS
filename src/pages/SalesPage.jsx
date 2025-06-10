@@ -10,7 +10,7 @@ import VentaFormModal from '../components/modals/SalesModalForm';
 import { createSale, updateSale, deleteSale, cambiarEstadoVenta } from '../services/salesService';
 import { getRepuestosActivos, getRepuestosCategoria } from '../services/repuestosService';
 import api from '../services/axiosConfig';
-import { exportToExcel, exportToPDF, prepareVentasForExport } from '../services/exportService';
+import { exportToExcel, prepareVentasForExport } from '../services/exportService';
 import { useNavigate } from "react-router-dom";
 
 const { confirm } = Modal;
@@ -448,7 +448,7 @@ const fetchCategorias = async () => {
           fetchSales()
         } catch (error) {
           console.error('Error:', error);
-          message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} la venta`);
+          message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} la venta (Stock Insuficiente)`);
         } finally {
           setConfirmLoading(false);
         }
@@ -462,13 +462,13 @@ const fetchCategorias = async () => {
     };
 
     // Función para manejar la exportación a PDF
-    const handleExportToPDF = () => {
-      const dataToExport = prepareVentasForExport(sales, clientes);
-      // Usamos las columnas para formar la estructura del PDF
-      const pdfColumns = columns.slice(0, -1); // Excluir la última columna (acciones)
-      exportToPDF(dataToExport, pdfColumns, 'Ventas');
-      message.success('Exportación a PDF completada');
-    };
+    // const handleExportToPDF = () => {
+    //   const dataToExport = prepareVentasForExport(sales, clientes);
+    //   // Usamos las columnas para formar la estructura del PDF
+    //   const pdfColumns = columns.slice(0, -1); // Excluir la última columna (acciones)
+    //   exportToPDF(dataToExport, pdfColumns, 'Ventas');
+    //   message.success('Exportación a PDF completada');
+    // };
 
     const processedSales = sales.map(sale => {
       // Crear una nueva propiedad para el nombre del cliente
@@ -512,13 +512,7 @@ const fetchCategorias = async () => {
                 <div>
                   <SearchBar placeholder="Buscar venta..." onSearch={setSearchTerm}/>
                 </div>
-                  <Button 
-                    type="default" 
-                    icon={<FilePdfOutlined />} 
-                    onClick={handleExportToPDF}
-                    className='pdf-boton'
-                  >PDF
-                  </Button>
+           
                   <Button 
                   icon={<FileExcelOutlined />} 
                   onClick={handleExportToExcel}

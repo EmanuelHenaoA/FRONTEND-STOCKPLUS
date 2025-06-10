@@ -1,7 +1,7 @@
 // DataTable.jsx
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Space, Tooltip } from 'antd';
-import { SearchOutlined, EditFilled, EyeFilled, EditOutlined, DeleteOutlined, SyncOutlined, DeleteFilled, EyeOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditFilled, EyeFilled, EditOutlined, DeleteOutlined, SyncOutlined, DeleteFilled, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import '../styles/DataTable.css';
 
 const DataTable = ({ 
@@ -167,11 +167,17 @@ const DataTable = ({
                       default: return 'Acción';
                     }
                   })()}>
-                  <Button 
-                    icon={<SyncOutlined spin={toggleStatusLoading && toggleStatusIdLoading === record._id} />} 
-                    onClick={() => onToggleStatus(record)} 
-                    type="text" 
-                    className={`action-button ${record.estado === 'Activo' || record.estado === 'Completada' ? 'status-active-button' : 'status-inactive-button'}`}
+                  <Button                      
+                      icon={
+                          toggleStatusLoading && toggleStatusIdLoading === record._id 
+                              ? <SyncOutlined spin /> 
+                              : (record.estado === 'Activo' || record.estado === 'Completada' 
+                                  ? <CloseCircleOutlined /> 
+                                  : <CheckCircleOutlined />)
+                      }                     
+                      onClick={() => onToggleStatus(record)}                      
+                      type="text"                      
+                      className={`action-button ${record.estado === 'Activo' || record.estado === 'Completada' ? 'status-active-button' : 'status-inactive-button'}`}                   
                   />
                 </Tooltip>
               )}

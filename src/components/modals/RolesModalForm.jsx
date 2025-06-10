@@ -181,6 +181,7 @@ const RolesModalForm = ({ visible, onCancel, onSubmit, initialValues, confirmLoa
         onOk={() => form.submit()}
         okText={mode === 'add' ? 'Crear' : 'Actualizar'}
         cancelText="Cancelar"
+        okButtonProps={{className: "custom-submit-btn"}}
       >
         <Form
           form={form}
@@ -233,8 +234,10 @@ const RolesModalForm = ({ visible, onCancel, onSubmit, initialValues, confirmLoa
                                 indeterminate={isModuloParcial(modulo)}
                                 onChange={(e) => handleToggleModulo(modulo, e.target.checked)}
                                 onClick={(e) => e.stopPropagation()}
+                                
                               />
                               <span style={{ marginLeft: '8px' }}>{modulo}</span>
+                              
                             </div>
                           }
                         >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, DatePicker, Select, Button, Table, InputNumber, Space, Typography } from 'antd';
+import { Modal, Form, DatePicker, Select, Button, Table, InputNumber, Space, Typography, message } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -269,6 +269,10 @@ const SalesModalForm = ({
   ];
 
   const handleFinish = (values) => {
+      if (ventaRepuestos.filter(item => item.idRepuesto).length === 0) {
+      message.error('Por favor, seleccione al menos un repuesto');
+      return;
+    }
     // Preparar los datos para enviar al servidor
     const formData = {
       ...values,

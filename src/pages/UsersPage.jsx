@@ -37,6 +37,7 @@ export const UsersPage = () => {
     {
       title: 'Nombre',
       dataIndex: 'nombre',
+      
       key: 'nombre',
 
     },

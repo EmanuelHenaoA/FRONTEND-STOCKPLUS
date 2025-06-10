@@ -86,7 +86,7 @@ const ClientsModalForm = ({
                   label="Documento"
                   rules={[
                     { required: true, message: "Por favor ingresa un documento válido" },
-                    { pattern: /^[0-9]{8,10}$/, message: "El documento debe tener entre 8 y 10 dígitos" } // Validación con expresión regular
+                    { pattern: /^[0-9]{8,10}$/, message: "El documento debe tener 8 o 10 dígitos" } // Validación con expresión regular
                   ]}
                   validateTrigger="onBlur"
                   >

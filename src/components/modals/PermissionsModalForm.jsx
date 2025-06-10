@@ -53,6 +53,8 @@ const PermissionsModalForm = ({
           type="primary"
           loading={confirmLoading}
           onClick={() => form.submit()}
+          className="custom-submit-btn" // Agrega esta clase
+
         >
           {mode === 'add' ? 'Crear' : 'Actualizar'}
         </Button>

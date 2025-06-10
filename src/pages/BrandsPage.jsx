@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Layout, message, Modal, Button, Form } from 'antd';
+import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined, EyeOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Layout, message, Modal, Button, Form, Row, Col, Card, Tooltip, Tag, Pagination } from 'antd';
 import { Typography } from 'antd';
 import { HeaderComponent } from "../components/HeaderComponent";
 import { Logo } from '../components/Logo';
 import { MenuList } from '../components/MenuList';
 import SearchBar from '../components/Searchbar';
-import DataTable from '../components/DataTable';
 import { getMarcas, createMarca, updateMarca, deleteMarca, cambiarEstadoMarca} from '../services/brandsService';
 import { useNavigate } from "react-router-dom";
 import CategoriesModalForm from '../components/modals/CatModalForm';
@@ -14,13 +13,15 @@ import BrandsModalForm from '../components/modals/BrandsModalForm';
 
 const { confirm } = Modal;
 
-export const BransPage = () => {
+export const BrandsPage = () => {
     const { Sider, Content } = Layout;
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [marcas, setMarcas] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredMarcas, setFilteredMarcas] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(8); // Fijo en 8 elementos por página
     const navigate = useNavigate();
     const [form] = Form.useForm(); // Crear instancia del formulario
     const { Title, Text } = Typography;
@@ -31,51 +32,6 @@ export const BransPage = () => {
     const [changingStatusId, setChangingStatusId] = useState(null);
     const [selectedMarca, setSelectedMarca] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
-
-    const columns = [
-        {
-            title: 'Nombre',
-            dataIndex: 'nombre',
-            key: 'nombre',
-        },
-        {
-            title: 'Fecha Creación',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            render: (fecha) => fecha ? new Date(fecha).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              }) : 'No se puede encontrar'
-        },
-        {
-            title: 'Última Actualización',
-            dataIndex: 'updatedAt',
-            key: 'updatedAt',
-            render: (fecha) => new Date(fecha).toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-              })
-        },
-         {
-            title: 'Estado',
-            dataIndex: 'estado',
-            key: 'estado',
-            render: (estado) => (
-                <span style={{ 
-                    background: estado === 'Activo' ?  '#28D4471E' : '#D329291E',
-                    color: estado === 'Activo' ?  '#53d447' : '#d32929' ,
-                    padding: '8px',
-                    borderRadius: '0.25rem',
-                    border: '1px solid'
-                    
-                    }}>
-                    {estado}
-                </span>
-            ) 
-        },
-    ];
 
     
     const fetchMarcas = async () => {
@@ -109,6 +65,7 @@ export const BransPage = () => {
 
 
       useEffect(() => {
+        setCurrentPage(1)
         if (!searchTerm) {
           setFilteredMarcas(marcas);
           return;
@@ -228,6 +185,16 @@ const handleSubmitMarca = async (formData) => {
     }
   };
 
+  // Calcular datos para la página actual
+    const getCurrentPageData = () => {
+    const dataToShow = searchTerm ? filteredMarcas : marcas;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return dataToShow.slice(startIndex, endIndex);
+    };
+
+    const totalItems = searchTerm ? filteredMarcas.length : marcas.length;
+
     return (
         <Layout>
             <Sider 
@@ -269,19 +236,72 @@ const handleSubmitMarca = async (formData) => {
                         </Button>
                     </div>
               
-                    <DataTable 
-                        columns={columns}
-                        dataSource={filteredMarcas}
-                        loading={loading}
-                        fetchData={fetchMarcas}
-                        onView={handleViewMarca}
-                        onEdit={handleEditMarca}
-                        onDelete={handleDeleteMarca}
-                        onToggleStatus={handleToggleStatus}  // Nueva prop para manejar cambio de estado
-                        toggleStatusLoading={changingStatusId !== null}  // Para controlar estado de carga
-                        toggleStatusIdLoading={changingStatusId}  // ID del elemento cambiando estado
-                        showToggleStatus={true}  // Mostrar botón de cambio de estado
-                    />
+                  {loading ? (
+                    // Mostrar skeleton cards mientras carga
+                    <Row gutter={[16, 16]}>
+                        {[...Array(8)].map((_, index) => (
+                        <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                            <Card loading={true} />
+                        </Col>
+                        ))}
+                    </Row>
+                    ) : (
+                    // Mostrar cards reales cuando termine de cargar
+                    <Row gutter={[16, 16]}>
+                        {getCurrentPageData().map(marca => (
+                        <Col xs={24} sm={12} md={8} lg={6} key={marca._id}>
+                            <Card
+                            hoverable
+                            className="brand-card"
+                            actions={[
+                                 <Tooltip title="Ver detalles">
+                                <EyeOutlined onClick={() => handleViewMarca(marca)} />
+                            </Tooltip>,
+                            <Tooltip title="Editar">
+                                <EditOutlined onClick={() => handleEditMarca(marca)} />
+                            </Tooltip>,
+                            <Tooltip title={marca.estado === 'Activo' ? 'Desactivar' : 'Activar'}>
+                                {changingStatusId === marca._id ? (
+                                <ReloadOutlined spin />
+                                ) : marca.estado === 'Activo' ? (
+                                <CloseCircleOutlined onClick={() => handleToggleStatus(marca)} />
+                                ) : (
+                                <CheckCircleOutlined onClick={() => handleToggleStatus(marca)} />
+                                )}
+                            </Tooltip>,
+                            <Tooltip title="Eliminar">
+                                <DeleteOutlined onClick={() => handleDeleteMarca(marca)} />
+                            </Tooltip>
+                            ]}
+                            >
+                                <div className="brand-card-content">
+                                <h3>{marca.nombre}</h3>
+                                <Tag color={marca.estado === 'Activo' ? 'green' : 'red'}>
+                                    {marca.estado}
+                                </Tag>
+                                <p className="brand-date">
+                                    Creado: {new Date(marca.createdAt).toLocaleDateString('es-ES')}
+                                </p>
+                                </div>
+                            </Card>
+                        </Col>
+                        ))}
+                    </Row>                  
+)}
+                {/* Agregar después del </Row> */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '24px' }}>
+                <Pagination
+                    current={currentPage}
+                    pageSize={pageSize}
+                    total={totalItems}
+                    onChange={(page) => setCurrentPage(page)}
+                    showSizeChanger={false}
+                    // showQuickJumper
+                    showTotal={(total, range) => 
+                    `${range[0]}-${range[1]} de ${total} marcas`
+                    }
+                />
+                </div>
                 </Content>
             </Layout>
           
@@ -302,4 +322,4 @@ const handleSubmitMarca = async (formData) => {
     );
 };
 
-export default BransPage;
+export default BrandsPage;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Layout, message, Modal, Button, Form } from 'antd';
+import { Layout, message, Modal, Button, Form, Input } from 'antd';
 import { Typography } from 'antd';
 import { HeaderComponent } from "../components/HeaderComponent";
 import { Logo } from '../components/Logo';
@@ -29,6 +29,9 @@ export const PermissionsPage = () => {
     const [modalMode, setModalMode] = useState('add');
     const [selectedPermiso, setSelectedPermiso] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
+    const [pendingFormData, setPendingFormData] = useState(null);
 
     const columns = [
         {
@@ -163,25 +166,39 @@ export const PermissionsPage = () => {
     };
 
     const handleSubmitPermiso = async (formData) => {
-        setConfirmLoading(true);
-        try {
-            if (modalMode === 'add') {
-                await createPermiso(formData);
-                message.success('Permiso creado exitosamente');
-            } else {
-                const { _id, ...permisoData } = formData;
-                await updatePermiso(_id, permisoData); 
-                message.success('Permiso actualizado exitosamente');
-            }
-            setModalVisible(false);
-            fetchPermisos();
-        } catch (error) {
-            console.error('Error:', error);
-            message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} el permiso`);
-        } finally {
-            setConfirmLoading(false);
-        }
+    // Guardar los datos del formulario y mostrar modal de confirmación
+    setPendingFormData(formData);
+    setConfirmModalVisible(true);
     };
+
+    const confirmSubmitPermiso = async () => {
+    if (confirmationText.toLowerCase() !== 'confirmar') {
+        message.error('Debes escribir "confirmar" para continuar');
+        return;
+    }
+
+    setConfirmLoading(true);
+    try {
+        if (modalMode === 'add') {
+            await createPermiso(pendingFormData);
+            message.success('Permiso creado exitosamente');
+        } else {
+            const { _id, ...permisoData } = pendingFormData;
+            await updatePermiso(_id, permisoData); 
+            message.success('Permiso actualizado exitosamente');
+        }
+        setModalVisible(false);
+        setConfirmModalVisible(false);
+        setConfirmationText('');
+        setPendingFormData(null);
+        fetchPermisos();
+    } catch (error) {
+        console.error('Error:', error);
+        message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} el permiso`);
+    } finally {
+        setConfirmLoading(false);
+    }
+};
 
     return (
         <Layout>
@@ -209,7 +226,7 @@ export const PermissionsPage = () => {
                         <div>
                             <SearchBar placeholder="Buscar permiso..." onSearch={setSearchTerm}/>
                         </div>
-                        {/* <Button 
+                        <Button 
                             type="primary" 
                             icon={<PlusOutlined />} 
                             onClick={() => {
@@ -218,10 +235,11 @@ export const PermissionsPage = () => {
                                 setSelectedPermiso(null);
                                 setModalVisible(true);
                             }}
-                            style={{ backgroundColor: '#d32929', borderColor: '#d32929' }}
+                            className='icon-create'
+
                         >
                             Crear Permiso
-                        </Button> */}
+                        </Button>
                     </div>
                     
                     <DataTable 
@@ -249,6 +267,30 @@ export const PermissionsPage = () => {
                 mode={modalMode}
                 form={form}
             />
+
+            {/* Modal de confirmación personalizado */}
+            <Modal
+                title={`Confirmar ${modalMode === 'add' ? 'Creación' : 'Actualización'} de Permiso`}
+                visible={confirmModalVisible}
+                onOk={confirmSubmitPermiso}
+                onCancel={() => {
+                    setConfirmModalVisible(false);
+                    setConfirmationText('');
+                    setPendingFormData(null);
+                }}
+                confirmLoading={confirmLoading}
+                okText="Confirmar"
+                cancelText="Cancelar"
+            >
+                <p>¿Estás seguro de que deseas {modalMode === 'add' ? 'crear' : 'actualizar'} este permiso?</p>
+                <p>Para continuar, escribe <strong>"confirmar"</strong> en el campo de abajo:</p>
+                <Input
+                    placeholder="Escribe 'confirmar' para continuar"
+                    value={confirmationText}
+                    onChange={(e) => setConfirmationText(e.target.value)}
+                    onPressEnter={confirmSubmitPermiso}
+                />
+            </Modal>
         </Layout>
     );
 };

@@ -139,3 +139,27 @@
 .status-inactive-button:hover {
   color: #ff4d4f;
 }
+
+.brand-card {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  margin-left: 28px;
+  margin-right: 28px;
+}
+
+.brand-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.brand-card-content h3 {
+  margin-bottom: 12px;
+  color: rgb(89, 94, 89);
+}
+
+.brand-date {
+  color: #666;
+  font-size: 12px;
+  margin-top: 8px;
+}

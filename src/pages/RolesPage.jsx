@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ExclamationCircleOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Layout, message, Modal, Button, Form, Table } from 'antd';
+import { Layout, message, Modal, Button, Form, Table, Input } from 'antd';
 import { Typography } from 'antd';
 import { HeaderComponent } from "../components/HeaderComponent";
 import { Logo } from '../components/Logo';
@@ -30,6 +30,9 @@ export const RolesPage = () => {
     const [changingStatusId, setChangingStatusId] = useState(null);
     const [selectedRol, setSelectedRol] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
+    const [pendingFormData, setPendingFormData] = useState(null);
 
     const columns = [
         {
@@ -238,26 +241,37 @@ export const RolesPage = () => {
     // Función para manejar envío del formulario (crear/editar)
     // Función para manejar el envío en RolesPage.jsx
 const handleSubmitRol = async (formData) => {
-    setConfirmLoading(true);
-    try {
-      if (modalMode === 'add') {
-        // Crear nuevo rol
-        await crearRol(formData);
-        message.success('Rol creado exitosamente');
-      } else {
-        // Actualizar rol existente - asegúrate de que el id se pase correctamente
-        const { _id, ...rolData } = formData; // Extraer ID
-        await actualizarRol(_id, rolData); // Asegúrate de que esto se envíe como /roles/{id}
-        message.success('Rol actualizado exitosamente');
+    setPendingFormData(formData);
+    setConfirmModalVisible(true);
+  };
+
+   const confirmSubmitRol = async () => {
+      if (confirmationText.toLowerCase() !== 'confirmar') {
+          message.error('Debes escribir "confirmar" para continuar');
+          return;
       }
-      setModalVisible(false);
-      fetchRoles();
-    } catch (error) {
-      console.error('Error:', error);
-      message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} el rol`);
-    } finally {
-      setConfirmLoading(false);
-    }
+  
+      setConfirmLoading(true);
+      try {
+          if (modalMode === 'add') {
+              await crearRol(pendingFormData);
+              message.success('Rol creado exitosamente');
+          } else {
+              const { _id, ...permisoData } = pendingFormData;
+              await actualizarRol(_id, permisoData); 
+              message.success('Rol actualizado exitosamente');
+          }
+          setModalVisible(false);
+          setConfirmModalVisible(false);
+          setConfirmationText('');
+          setPendingFormData(null);
+          fetchRoles();
+      } catch (error) {
+          console.error('Error:', error);
+          message.error(`Error al ${modalMode === 'add' ? 'crear' : 'actualizar'} el Rol`);
+      } finally {
+          setConfirmLoading(false);
+      }
   };
 
     return (
@@ -330,6 +344,29 @@ const handleSubmitRol = async (formData) => {
                 mode={modalMode}
                 form={form}
             />
+            {/* Modal de confirmación personalizado */}
+            <Modal
+                title={`Confirmar ${modalMode === 'add' ? 'Creación' : 'Actualización'} de rol`}
+                visible={confirmModalVisible}
+                onOk={confirmSubmitRol}
+                onCancel={() => {
+                    setConfirmModalVisible(false);
+                    setConfirmationText('');
+                    setPendingFormData(null);
+                }}
+                confirmLoading={confirmLoading}
+                okText="Confirmar"
+                cancelText="Cancelar"
+            >
+                <p>¿Estás seguro de que deseas {modalMode === 'add' ? 'crear' : 'actualizar'} este rol?</p>
+                <p>Para continuar, escribe <strong>"confirmar"</strong> en el campo de abajo:</p>
+                <Input
+                    placeholder="Escribe 'confirmar' para continuar"
+                    value={confirmationText}
+                    onChange={(e) => setConfirmationText(e.target.value)}
+                    onPressEnter={confirmSubmitRol}
+                />
+            </Modal>
         </Layout>
     );
 };
