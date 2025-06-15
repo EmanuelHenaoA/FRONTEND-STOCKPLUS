@@ -125,7 +125,7 @@ export const BrandsPage = () => {
             fetchMarcas()
         } catch (error) {
             console.error('Error al cambiar estado del marca:', error);
-            message.error('Error al cambiar el estado del marca');
+            message.error('Error al cambiar el estado del marca (En uso)');
         } finally {
             setChangingStatusId(null);
         }
@@ -255,22 +255,22 @@ const handleSubmitMarca = async (formData) => {
                             className="brand-card"
                             actions={[
                                  <Tooltip title="Ver detalles">
-                                <EyeOutlined onClick={() => handleViewMarca(marca)} />
+                                <EyeOutlined onClick={() => handleViewMarca(marca)} style={{color: 'black'}} />
                             </Tooltip>,
                             <Tooltip title="Editar">
-                                <EditOutlined onClick={() => handleEditMarca(marca)} />
+                                <EditOutlined onClick={() => handleEditMarca(marca)} style={{color: '#427496'}}  />
                             </Tooltip>,
                             <Tooltip title={marca.estado === 'Activo' ? 'Desactivar' : 'Activar'}>
                                 {changingStatusId === marca._id ? (
                                 <ReloadOutlined spin />
                                 ) : marca.estado === 'Activo' ? (
-                                <CloseCircleOutlined onClick={() => handleToggleStatus(marca)} />
+                                <CloseCircleOutlined onClick={() => handleToggleStatus(marca)} style={{color: '#ff4d4f'}} />
                                 ) : (
-                                <CheckCircleOutlined onClick={() => handleToggleStatus(marca)} />
+                                <CheckCircleOutlined onClick={() => handleToggleStatus(marca)} style={{color: '#52c41a'}} />
                                 )}
                             </Tooltip>,
                             <Tooltip title="Eliminar">
-                                <DeleteOutlined onClick={() => handleDeleteMarca(marca)} />
+                                <DeleteOutlined onClick={() => handleDeleteMarca(marca)} style={{color: '#9b4444'}} />
                             </Tooltip>
                             ]}
                             >
@@ -280,7 +280,7 @@ const handleSubmitMarca = async (formData) => {
                                     {marca.estado}
                                 </Tag>
                                 <p className="brand-date">
-                                    Creado: {new Date(marca.createdAt).toLocaleDateString('es-ES')}
+                                    Creada: {new Date(marca.createdAt).toLocaleDateString('es-ES')}
                                 </p>
                                 </div>
                             </Card>

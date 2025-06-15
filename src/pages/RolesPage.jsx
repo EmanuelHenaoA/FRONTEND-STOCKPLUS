@@ -357,6 +357,7 @@ const handleSubmitRol = async (formData) => {
                 confirmLoading={confirmLoading}
                 okText="Confirmar"
                 cancelText="Cancelar"
+                okButtonProps={{className: "custom-submit-btn"}}
             >
                 <p>¿Estás seguro de que deseas {modalMode === 'add' ? 'crear' : 'actualizar'} este rol?</p>
                 <p>Para continuar, escribe <strong>"confirmar"</strong> en el campo de abajo:</p>

@@ -1,7 +1,7 @@
 // UsersPage.jsx
 import React, { useState, useEffect } from 'react';
 import { ExclamationCircleOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Layout, message, Modal, Button } from 'antd';
+import { Layout, message, Modal, Button, Select } from 'antd';
 import { HeaderComponent } from "../components/HeaderComponent";
 import { Logo } from '../components/Logo';
 import { MenuList } from '../components/MenuList';
@@ -20,6 +20,7 @@ export const UsersPage = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
+    const [selectedRole, setSelectedRole] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
     const navigate = useNavigate()
@@ -158,14 +159,13 @@ export const UsersPage = () => {
         fetchRoles();
       }, []);
 
-      useEffect(() => {
-        if (!searchTerm) {
-          setFilteredUsers(users);
-          return;
-        }
-        
-        const filtered = users.filter(user => {
-          const searchTermLower = searchTerm.toLowerCase();
+     useEffect(() => {
+      let filtered = users;
+      
+      // Filtro por término de búsqueda
+      if (searchTerm) {
+        const searchTermLower = searchTerm.toLowerCase();
+        filtered = filtered.filter(user => {
           return (
             (user.nombre && user.nombre.toLowerCase().includes(searchTermLower)) ||
             (user.documento && String(user.documento).toLowerCase().includes(searchTermLower)) ||
@@ -175,9 +175,17 @@ export const UsersPage = () => {
             (user.estado && user.estado.toLowerCase().includes(searchTermLower))
           );
         });
-        
-        setFilteredUsers(filtered);
-      }, [searchTerm, users]);
+      }
+      
+      // Filtro por rol seleccionado
+      if (selectedRole) {
+        filtered = filtered.filter(user => 
+          user.rol && user.rol._id === selectedRole
+        );
+      }
+      
+      setFilteredUsers(filtered);
+    }, [searchTerm, users, selectedRole]);
 
 
   // Funciones para manejar acciones
@@ -318,6 +326,19 @@ export const UsersPage = () => {
         <Content>
           <div className='container-items'>
             <SearchBar placeholder="Buscar usuario..." onSearch={setSearchTerm}/>
+            <Select
+              placeholder="Filtrar por rol"
+              allowClear
+              style={{ width: 200 }}
+              onChange={setSelectedRole}
+              value={selectedRole}
+            >
+              {roles.map(rol => (
+                <Select.Option key={rol._id} value={rol._id}>
+                  {rol.nombre}
+                </Select.Option>
+              ))}
+            </Select>
             <Button 
               type="primary" 
               icon={<UserAddOutlined />} 

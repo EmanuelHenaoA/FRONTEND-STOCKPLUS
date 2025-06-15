@@ -53,12 +53,12 @@
   }
   
   .custom-table .ant-pagination-item-active {
-    background-color: var(--lightgreen);
-    border-color: white;
+    background-color: var(--light);
+    border-color: var(--lightgreen);
   }
   
   .custom-table .ant-pagination-item-active a {
-    color: var(--light);
+    color: var(--lightgreen);
   }
   
   .custom-table .ant-pagination-item:hover {
@@ -66,7 +66,7 @@
   }
   
   .custom-table .ant-pagination-item:hover a {
-    color: #7e7c7c;
+    color: #0e0b0b;
   }
   
   /* Action Buttons */
@@ -81,13 +81,13 @@
   }
   
   .edit-button {
-    color: rgb(66, 116, 150);
+    color: #427496;
     background-color:#dbdbdb;
     border-radius: 40px;
   }
   
   .delete-button {
-    color: rgb(155, 68, 68);
+    color: #9b4444;
     background-color: #dbdbdb;
     border-radius: 40px;
   }

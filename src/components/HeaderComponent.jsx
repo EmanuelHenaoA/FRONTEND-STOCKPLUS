@@ -222,7 +222,7 @@ export const HeaderComponent = ({ collapsed, setCollapsed, title, isReadOnlyMode
             <Avatar 
               className="profile-icon" 
               icon={<QuestionOutlined />} 
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/catalogo")}
             />
           </>
         )}
